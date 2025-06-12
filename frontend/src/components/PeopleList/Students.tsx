@@ -350,69 +350,92 @@ export const Students: React.FC<StudentsProps> = ({
                 </h4>
                 {newEducatorRequirements.map((req, index) => (
                   <div key={index} className={styles["educator-requirement"]}>
-                    <span>
-                      <span>Meet with:</span>
-                      <select
-                        value={req.educatorId}
-                        onChange={(e) =>
-                          handleUpdateEducatorRequirement(
-                            index,
-                            "educatorId",
-                            e.target.value
-                          )
-                        }
-                        required
-                      >
-                        <option value="">Select Educator</option>
-                        {educators.map((educator) => (
-                          <option key={educator.id} value={educator.id}>
-                            {educator.name}
-                          </option>
-                        ))}
-                      </select>
-                    </span>
-                    <span>
-                      <span>Meetings/week:</span>
-                      <input
-                        type="number"
-                        min="1"
-                        max="7"
-                        placeholder="Meetings/week"
-                        value={req.meetingsPerWeek}
-                        onChange={(e) =>
-                          handleUpdateEducatorRequirement(
-                            index,
-                            "meetingsPerWeek",
-                            parseInt(e.target.value)
-                          )
-                        }
-                        required
-                      />
-                    </span>
-                    <span>
-                      <span>Duration (min):</span>
-                      <input
-                        type="number"
-                        min="5"
-                        step="5"
-                        placeholder="Duration (min)"
-                        value={req.meetingDurationMinutes}
-                        onChange={(e) =>
-                          handleUpdateEducatorRequirement(
-                            index,
-                            "meetingDurationMinutes",
-                            parseInt(e.target.value)
-                          )
-                        }
-                        required
-                      />
+                    <span className={styles["educator-requirement-items"]}>
+                      <span className={styles["educator-requirement-item"]}>
+                        <span className={styles["educator-requirement-title"]}>
+                          Meet with:
+                        </span>
+                        <select
+                          value={req.educatorId}
+                          onChange={(e) =>
+                            handleUpdateEducatorRequirement(
+                              index,
+                              "educatorId",
+                              e.target.value
+                            )
+                          }
+                          required
+                        >
+                          <option value="">Select Educator</option>
+                          {educators.map((educator) => (
+                            <option key={educator.id} value={educator.id}>
+                              {educator.name}
+                            </option>
+                          ))}
+                        </select>
+                      </span>
+                      <span className={styles["educator-requirement-item"]}>
+                        <span className={styles["educator-requirement-title"]}>
+                          Meetings/week:
+                        </span>
+                        <input
+                          type="number"
+                          min="1"
+                          max="7"
+                          placeholder="Meetings/week"
+                          value={req.meetingsPerWeek}
+                          onChange={(e) =>
+                            handleUpdateEducatorRequirement(
+                              index,
+                              "meetingsPerWeek",
+                              parseInt(e.target.value)
+                            )
+                          }
+                          required
+                        />
+                      </span>
+                      <span className={styles["educator-requirement-item"]}>
+                        <span className={styles["educator-requirement-title"]}>
+                          Duration (min):
+                        </span>
+                        <input
+                          type="number"
+                          min="5"
+                          step="5"
+                          placeholder="Duration (min)"
+                          value={req.meetingDurationMinutes}
+                          onChange={(e) =>
+                            handleUpdateEducatorRequirement(
+                              index,
+                              "meetingDurationMinutes",
+                              parseInt(e.target.value)
+                            )
+                          }
+                          required
+                        />
+                      </span>
                     </span>
                     <button
                       type="button"
-                      className={styles["remove-btn"]}
+                      className={styles["educator-requirement-remove-btn"]}
                       onClick={() => handleRemoveEducatorRequirement(index)}
+                      aria-label="Remove requirement"
                     >
-                      ×
+                      <svg
+                        width="18"
+                        height="18"
+                        viewBox="0 0 20 20"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M6.5 7.5V14.5M10 7.5V14.5M13.5 7.5V14.5M3 5.5H17M8.5 3.5H11.5C12.0523 3.5 12.5 3.94772 12.5 4.5V5.5H7.5V4.5C7.5 3.94772 7.94772 3.5 8.5 3.5Z"
+                          stroke="#888"
+                          strokeWidth="1.5"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
                     </button>
                   </div>
                 ))}
@@ -509,7 +532,7 @@ export const Students: React.FC<StudentsProps> = ({
                             );
                           }}
                         >
-                          ×
+                          - Remove Requirement
                         </button>
                       </li>
                     );

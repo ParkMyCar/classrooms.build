@@ -374,29 +374,59 @@
 .educator-requirement {
   display: flex;
   align-items: center;
-  flex-direction: column;
   border: 1px solid #d1d5db;
   border-radius: 4px;
   gap: 0.5rem;
-  padding: 0.25rem 0;
+  position: relative;
+  transition: all 0.2s ease;
 }
+
+.educator-requirement:has(.educator-requirement-remove-btn:hover),
+.educator-requirement.delete-hover {
+  background: #fee2e2;
+  border-color: #ef4444;
+  box-shadow: 0 2px 8px rgba(239,68,68,0.08);
+}
+
+.educator-requirement-remove-btn {
+  display: flex;
+  padding: 0;
+  margin-bottom: auto;
+  color: #888;
+  transition: color 0.2s ease;
+  border: none;
+}
+
+.educator-requirement-remove-btn:hover svg path {
+  stroke: #dc2626;
+}
+
+.educator-requirement-items {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.educator-requirement-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.educator-requirement-title {
+  display: flex;
+  font-size: 0.9rem;
+  white-space: nowrap;
+  min-width: fit-content;
+}
+
 
 .educator-requirement span {
   color: #444;
-}
-
-.educator-requirement .remove-btn {
-  background: none;
-  border: none;
-  color: #888;
-  cursor: pointer;
-  padding: 0 0.25rem;
-  font-size: 1.2rem;
-  line-height: 1;
-}
-
-.educator-requirement .remove-btn:hover {
-  color: #ff4444;
 }
 
 .add-educator-requirement {
@@ -417,7 +447,7 @@
 }
 
 .add-educator-requirement input[type="number"] {
-  width: 100px;
+  width: 64px;
 }
 
 .add-educator-requirement button {
@@ -469,19 +499,17 @@
 }
 
 .educator-requirements .educator-requirement input[type="number"] {
-  width: 100px;
+  width: 64px;
 }
 
 .educator-requirements .educator-requirement .remove-btn {
-  background: none;
+  margin-top: 0.5rem;
+  padding: 0.25rem 0.75rem;
+  background: #dc2626;
+  color: white;
   border: none;
-  color: #888;
+  border-radius: 4px;
   cursor: pointer;
-  padding: 0 0.25rem;
-  font-size: 1.2rem;
-  line-height: 1;
+  font-size: 0.9rem;
+  width: 100%;
 }
-
-.educator-requirements .educator-requirement .remove-btn:hover {
-  color: #ff4444;
-} 
