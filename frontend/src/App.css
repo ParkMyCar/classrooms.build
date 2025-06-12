@@ -134,6 +134,26 @@ h1 {
   margin: 0;
 }
 
+.clear-button {
+  padding: 0.5rem 1rem;
+  background-color: #ef4444;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.clear-button:hover:not(:disabled) {
+  background-color: #dc2626;
+}
+
+.clear-button:disabled {
+  background-color: #fca5a5;
+  cursor: not-allowed;
+}
+
 .calendar-container {
   background: white;
   padding: 1rem;

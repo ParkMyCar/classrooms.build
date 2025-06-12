@@ -9,6 +9,7 @@ function App() {
   const [blockSizeMinutes, setBlockSizeMinutes] = useState(15);
   const [showSaturday, setShowSaturday] = useState(false);
   const [showSunday, setShowSunday] = useState(false);
+  const [selectedSlots, setSelectedSlots] = useState<{ day: number; time: number }[]>([]);
 
   // Convert time string (HH:mm) to hour number
   const timeToHour = (timeStr: string) => {
@@ -17,7 +18,11 @@ function App() {
   };
 
   const handleAvailabilityChange = (slots: { day: number; time: number }[]) => {
-    console.log('Selected time slots:', slots);
+    setSelectedSlots(slots);
+  };
+
+  const handleClearAll = () => {
+    setSelectedSlots([]);
   };
 
   return (
@@ -76,6 +81,13 @@ function App() {
             Sat
           </label>
         </div>
+        <button 
+          className="clear-button"
+          onClick={handleClearAll}
+          disabled={selectedSlots.length === 0}
+        >
+          Clear All
+        </button>
       </div>
 
       <div className="calendar-container">
@@ -86,6 +98,7 @@ function App() {
           blockSizeMinutes={blockSizeMinutes}
           showSaturday={showSaturday}
           showSunday={showSunday}
+          selectedSlots={selectedSlots}
         />
       </div>
     </div>
