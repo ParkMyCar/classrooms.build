@@ -46,9 +46,6 @@ interface PeopleListProps {
     onAdd: () => void;
     onSelect: (id: string) => void;
     onDelete: (id: string) => void;
-    onUpdateAttribute: (idx: number, attrIdx: number, key: string, value: string) => void;
-    onRemoveAttribute: (idx: number, attrIdx: number) => void;
-    onAddAttribute: (idx: number) => void;
   };
 }
 

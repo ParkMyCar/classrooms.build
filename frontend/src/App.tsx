@@ -263,36 +263,6 @@ function App() {
                 setEducators(educators => educators.filter(e => e.id !== id));
                 if (selectedEducatorId === id) setSelectedEducatorId(null);
               },
-              onUpdateAttribute: (educatorIdx, attrIdx, key, value) => {
-                setEducators(educators => educators.map((e, i) => {
-                  if (i !== educatorIdx) return e;
-                  const entries = Object.entries(e.attributes);
-                  entries[attrIdx][0] = key;
-                  entries[attrIdx][1] = value;
-                  const newAttrs: Record<string, string> = {};
-                  entries.forEach(([k, v]) => { newAttrs[k] = v; });
-                  return { ...e, attributes: newAttrs };
-                }));
-              },
-              onRemoveAttribute: (educatorIdx, attrIdx) => {
-                setEducators(educators => educators.map((e, i) => {
-                  if (i !== educatorIdx) return e;
-                  const newAttrs: Record<string, string> = {};
-                  Object.entries(e.attributes).forEach(([k, v], idx) => {
-                    if (idx !== attrIdx) newAttrs[k] = v;
-                  });
-                  return { ...e, attributes: newAttrs };
-                }));
-              },
-              onAddAttribute: (educatorIdx) => {
-                setEducators(educators => educators.map((e, i) => {
-                  if (i !== educatorIdx) return e;
-                  return {
-                    ...e,
-                    attributes: { ...e.attributes, [""]: "" }
-                  };
-                }));
-              },
             }}
           />
         </div>

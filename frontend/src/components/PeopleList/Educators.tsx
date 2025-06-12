@@ -4,7 +4,6 @@ import styles from './PeopleList.module.css';
 interface Educator {
   id: string;
   name: string;
-  attributes: Record<string, string>;
   schedule: { day: number; time: number; mode: string }[];
   subjects: string[];
 }
@@ -17,9 +16,6 @@ interface EducatorsProps {
   onAdd: () => void;
   onSelect: (id: string) => void;
   onDelete: (id: string) => void;
-  onUpdateAttribute: (idx: number, attrIdx: number, key: string, value: string) => void;
-  onRemoveAttribute: (idx: number, attrIdx: number) => void;
-  onAddAttribute: (idx: number) => void;
 }
 
 export const Educators: React.FC<EducatorsProps> = ({
@@ -30,9 +26,6 @@ export const Educators: React.FC<EducatorsProps> = ({
   onAdd,
   onSelect,
   onDelete,
-  onUpdateAttribute,
-  onRemoveAttribute,
-  onAddAttribute,
 }) => {
   return (
     <>
@@ -57,7 +50,7 @@ export const Educators: React.FC<EducatorsProps> = ({
             </form>
           </div>
         </li>
-        {list.map((educator, idx) => (
+        {list.map((educator) => (
           <li key={educator.id} className={styles['list-item']}>
             <div
               className={
@@ -83,44 +76,6 @@ export const Educators: React.FC<EducatorsProps> = ({
                 </svg>
               </button>
               <span className={styles['name']}>{educator.name}</span>
-              <ul className={styles['attr-list']}>
-                {Object.entries(educator.attributes).map(([key, value], attrIdx) => (
-                  <li key={key} className={styles['attr-list-item']}>
-                    <input
-                      className={styles['attr-key-input']}
-                      type="text"
-                      value={key}
-                      onChange={e => {
-                        onUpdateAttribute(idx, attrIdx, e.target.value, value);
-                      }}
-                      placeholder="Key"
-                    />
-                    <input
-                      className={styles['attr-value-input']}
-                      type="text"
-                      value={value}
-                      onChange={e => {
-                        onUpdateAttribute(idx, attrIdx, key, e.target.value);
-                      }}
-                      placeholder="Value"
-                    />
-                    <button
-                      type="button"
-                      className={styles['remove-attr-btn']}
-                      onClick={() => onRemoveAttribute(idx, attrIdx)}
-                    >
-                      &times;
-                    </button>
-                  </li>
-                ))}
-              </ul>
-              <button
-                type="button"
-                className={styles['add-attr-btn']}
-                onClick={() => onAddAttribute(idx)}
-              >
-                + Attribute
-              </button>
             </div>
           </li>
         ))}
