@@ -53,6 +53,38 @@ h1 {
   margin-bottom: 2rem;
 }
 
+.time-controls {
+  display: flex;
+  gap: 2rem;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+
+.time-input {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.time-input label {
+  font-weight: 500;
+  color: #374151;
+}
+
+.time-input input {
+  width: 80px;
+  padding: 0.5rem;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.time-input input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+}
+
 .calendar-container {
   background: white;
   padding: 1rem;

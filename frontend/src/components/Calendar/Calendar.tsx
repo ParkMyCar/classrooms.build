@@ -9,14 +9,28 @@ interface TimeSlot {
 
 interface CalendarProps {
   onAvailabilityChange?: (slots: TimeSlot[]) => void;
+  startHour?: number;  // 24-hour format (0-23)
+  endHour?: number;    // 24-hour format (0-23)
 }
 
-export function Calendar({ onAvailabilityChange }: CalendarProps) {
+export function Calendar({ 
+  onAvailabilityChange,
+  startHour = 8,  // Default to 8 AM
+  endHour = 16    // Default to 4 PM
+}: CalendarProps) {
   const [selectedSlots, setSelectedSlots] = useState<TimeSlot[]>([]);
   const [isSelecting, setIsSelecting] = useState(false);
 
-  // Generate time slots from 8 AM to 4 PM
-  const timeSlots = Array.from({ length: 17 }, (_, i) => i + 8);
+  // Validate and adjust time range
+  const validStartHour = Math.max(0, Math.min(23, startHour));
+  const validEndHour = Math.max(0, Math.min(23, endHour));
+  const adjustedEndHour = validEndHour <= validStartHour ? validStartHour + 8 : validEndHour;
+  
+  // Generate time slots based on start and end hours
+  const timeSlots = Array.from(
+    { length: adjustedEndHour - validStartHour + 1 },
+    (_, i) => i + validStartHour
+  );
   
   // Generate days of the week
   const today = new Date();
