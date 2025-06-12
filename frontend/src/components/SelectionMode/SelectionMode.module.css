@@ -36,6 +36,7 @@
 .cannot:hover,
 .cannot.active {
   background-color: #fecaca;
+  border-color: #ef4444;
 }
 
 /* Prefer Not - Orange */
@@ -47,6 +48,7 @@
 .preferNot:hover,
 .preferNot.active {
   background-color: #fed7aa;
+  border-color: #f97316;
 }
 
 /* Available - Blue */
@@ -58,6 +60,7 @@
 .available:hover,
 .available.active {
   background-color: #bfdbfe;
+  border-color: #3b82f6;
 }
 
 /* Preferred - Green */
@@ -69,4 +72,5 @@
 .preferred:hover,
 .preferred.active {
   background-color: #bbf7d0;
+  border-color: #22c55e;
 } 
