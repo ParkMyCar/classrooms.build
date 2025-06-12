@@ -71,7 +71,7 @@ function App() {
               checked={showSunday}
               onChange={(e) => setShowSunday(e.target.checked)}
             />
-            Sun
+            Sunday
           </label>
           <label className="checkbox-label">
             <input
@@ -79,7 +79,7 @@ function App() {
               checked={showSaturday}
               onChange={(e) => setShowSaturday(e.target.checked)}
             />
-            Sat
+            Saturday
           </label>
         </div>
       </div>
