@@ -52,13 +52,17 @@ export const Students: React.FC<StudentsProps> = ({
 
   const handleAddRequiredAttribute = (e: React.FormEvent) => {
     e.preventDefault();
-    if (newRequiredAttr.trim()) {
+    const name = newRequiredAttr.trim();
+    if (name) {
       const values = newRequiredValues.trim() 
         ? newRequiredValues.split(',').map(v => v.trim()).filter(Boolean)
         : null;
-      onAddRequiredAttribute(newRequiredAttr.trim(), values);
+      onAddRequiredAttribute(name, values);
+      // Clear both fields after successful addition
       setNewRequiredAttr('');
       setNewRequiredValues('');
+      // Reset the form
+      (e.target as HTMLFormElement).reset();
     }
   };
 
@@ -83,7 +87,14 @@ export const Students: React.FC<StudentsProps> = ({
     <>
       <div className={styles['required-attributes']}>
         <h4>Required Attributes</h4>
-        <form onSubmit={handleAddRequiredAttribute} className={styles['add-form']}>
+        <form 
+          onSubmit={handleAddRequiredAttribute} 
+          className={styles['add-form']}
+          onReset={() => {
+            setNewRequiredAttr('');
+            setNewRequiredValues('');
+          }}
+        >
           <input
             type="text"
             placeholder="Name"
@@ -93,10 +104,11 @@ export const Students: React.FC<StudentsProps> = ({
           />
           <input
             type="text"
-            placeholder="Values (comma-separated, or leave empty)"
+            placeholder="Values"
             value={newRequiredValues}
             onChange={e => setNewRequiredValues(e.target.value)}
             style={{ marginRight: 8, flex: 1 }}
+            title="Enter a comma-separated list of values, or leave empty for free-form text."
           />
           <button type="submit" className={styles['add-btn']}>+</button>
         </form>
