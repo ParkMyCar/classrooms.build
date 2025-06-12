@@ -5,6 +5,11 @@ import styles from './PeopleList.module.css';
 
 type Tab = 'students' | 'educators';
 
+interface RequiredAttribute {
+  name: string;
+  values: string[] | null; // null means free-form text
+}
+
 interface PeopleListProps {
   students: {
     list: Array<{
@@ -13,6 +18,7 @@ interface PeopleListProps {
       attributes: Record<string, string>;
       schedule: { day: number; time: number; mode: string }[];
     }>;
+    requiredAttributes: RequiredAttribute[];
     selectedId: string | null;
     newName: string;
     setNewName: (name: string) => void;
@@ -22,6 +28,9 @@ interface PeopleListProps {
     onUpdateAttribute: (idx: number, attrIdx: number, key: string, value: string) => void;
     onRemoveAttribute: (idx: number, attrIdx: number) => void;
     onAddAttribute: (idx: number) => void;
+    onAddRequiredAttribute: (name: string, values: string[] | null) => void;
+    onRemoveRequiredAttribute: (name: string) => void;
+    onUpdateRequiredAttributeValues: (name: string, values: string[] | null) => void;
   };
   educators: {
     list: Array<{

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styles from './PeopleList.module.css';
 
 interface Student {
@@ -8,8 +8,14 @@ interface Student {
   schedule: { day: number; time: number; mode: string }[];
 }
 
+interface RequiredAttribute {
+  name: string;
+  values: string[] | null; // null means free-form text
+}
+
 interface StudentsProps {
   list: Student[];
+  requiredAttributes: RequiredAttribute[];
   selectedId: string | null;
   newName: string;
   setNewName: (name: string) => void;
@@ -19,10 +25,14 @@ interface StudentsProps {
   onUpdateAttribute: (idx: number, attrIdx: number, key: string, value: string) => void;
   onRemoveAttribute: (idx: number, attrIdx: number) => void;
   onAddAttribute: (idx: number) => void;
+  onAddRequiredAttribute: (name: string, values: string[] | null) => void;
+  onRemoveRequiredAttribute: (name: string) => void;
+  onUpdateRequiredAttributeValues: (name: string, values: string[] | null) => void;
 }
 
 export const Students: React.FC<StudentsProps> = ({
   list,
+  requiredAttributes,
   selectedId,
   newName,
   setNewName,
@@ -32,9 +42,123 @@ export const Students: React.FC<StudentsProps> = ({
   onUpdateAttribute,
   onRemoveAttribute,
   onAddAttribute,
+  onAddRequiredAttribute,
+  onRemoveRequiredAttribute,
+  onUpdateRequiredAttributeValues,
 }) => {
+  const [newRequiredAttr, setNewRequiredAttr] = useState('');
+  const [newRequiredValues, setNewRequiredValues] = useState('');
+  const [editingValues, setEditingValues] = useState<string | null>(null);
+
+  const handleAddRequiredAttribute = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (newRequiredAttr.trim()) {
+      const values = newRequiredValues.trim() 
+        ? newRequiredValues.split(',').map(v => v.trim()).filter(Boolean)
+        : null;
+      onAddRequiredAttribute(newRequiredAttr.trim(), values);
+      setNewRequiredAttr('');
+      setNewRequiredValues('');
+    }
+  };
+
+  const handleEditValues = (name: string) => {
+    const attr = requiredAttributes.find(a => a.name === name);
+    if (attr) {
+      setEditingValues(name);
+      setNewRequiredValues(attr.values?.join(', ') || '');
+    }
+  };
+
+  const handleSaveValues = (name: string) => {
+    const values = newRequiredValues.trim() 
+      ? newRequiredValues.split(',').map(v => v.trim()).filter(Boolean)
+      : null;
+    onUpdateRequiredAttributeValues(name, values);
+    setEditingValues(null);
+    setNewRequiredValues('');
+  };
+
   return (
     <>
+      <div className={styles['required-attributes']}>
+        <h4>Required Attributes</h4>
+        <form onSubmit={handleAddRequiredAttribute} className={styles['add-form']}>
+          <input
+            type="text"
+            placeholder="Name"
+            value={newRequiredAttr}
+            onChange={e => setNewRequiredAttr(e.target.value)}
+            style={{ marginRight: 8 }}
+          />
+          <input
+            type="text"
+            placeholder="Values (comma-separated, or leave empty)"
+            value={newRequiredValues}
+            onChange={e => setNewRequiredValues(e.target.value)}
+            style={{ marginRight: 8, flex: 1 }}
+          />
+          <button type="submit" className={styles['add-btn']}>+</button>
+        </form>
+        <ul className={styles['required-attr-list']}>
+          {requiredAttributes && requiredAttributes.map(attr => (
+            <li key={attr.name} className={styles['required-attr-item']}>
+              <div className={styles['required-attr-content']}>
+                <span className={styles['required-attr-name']}>{attr.name}</span>
+                {editingValues === attr.name ? (
+                  <div className={styles['required-attr-edit']}>
+                    <input
+                      type="text"
+                      value={newRequiredValues}
+                      onChange={e => setNewRequiredValues(e.target.value)}
+                      placeholder="Possible values (comma-separated)"
+                    />
+                    <button
+                      type="button"
+                      className={styles['save-btn']}
+                      onClick={() => handleSaveValues(attr.name)}
+                    >
+                      Save
+                    </button>
+                    <button
+                      type="button"
+                      className={styles['cancel-btn']}
+                      onClick={() => setEditingValues(null)}
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                ) : (
+                  <div className={styles['required-attr-values']}>
+                    {attr.values && (
+                      <>
+                        <span className={styles['values-label']}>Values:</span>
+                        <span className={styles['values-list']}>{attr.values.join(', ')}</span>
+                        <button
+                          type="button"
+                          className={styles['edit-btn']}
+                          onClick={() => handleEditValues(attr.name)}
+                          title="Edit values"
+                        >
+                          ✎
+                        </button>
+                      </>
+                    )}
+                  </div>
+                )}
+              </div>
+              <button
+                type="button"
+                className={styles['remove-attr-btn']}
+                onClick={() => onRemoveRequiredAttribute(attr.name)}
+                title="Remove required attribute"
+              >
+                &times;
+              </button>
+            </li>
+          ))}
+        </ul>
+      </div>
       <ul className={styles['list-ul']}>
         <li className={styles['add-list-item']}>
           <div className={styles['group-box'] + ' ' + styles['add-group-box']}>

@@ -32,6 +32,12 @@ function App() {
   const [selectedStudentId, setSelectedStudentId] = useState<string | null>(null);
   const [newStudentName, setNewStudentName] = useState('');
   const [newStudentAttributes, setNewStudentAttributes] = useState<{ key: string; value: string }[]>([]);
+  
+  interface RequiredAttribute {
+    name: string;
+    values: string[] | null; // null means free-form text
+  }
+  const [requiredStudentAttributes, setRequiredStudentAttributes] = useState<RequiredAttribute[]>([]);
 
   // Educator state
   const [educators, setEducators] = useState<Educator[]>([]);
@@ -44,6 +50,22 @@ function App() {
   const selectedEducator = educators.find(e => e.id === selectedEducatorId) || null;
   const selectedEntity = selectedStudent || selectedEducator;
 
+  const handleAddRequiredAttribute = (name: string, values: string[] | null) => {
+    if (!requiredStudentAttributes.some(attr => attr.name === name)) {
+      setRequiredStudentAttributes(prev => [...prev, { name, values }]);
+    }
+  };
+
+  const handleRemoveRequiredAttribute = (name: string) => {
+    setRequiredStudentAttributes(prev => prev.filter(attr => attr.name !== name));
+  };
+
+  const handleUpdateRequiredAttributeValues = (name: string, values: string[] | null) => {
+    setRequiredStudentAttributes(prev => 
+      prev.map(attr => attr.name === name ? { ...attr, values } : attr)
+    );
+  };
+
   // Add a new student
   const handleAddStudent = () => {
     if (!newStudentName.trim()) return;
@@ -51,6 +73,30 @@ function App() {
     newStudentAttributes.forEach(attr => {
       if (attr.key.trim()) attributes[attr.key] = attr.value;
     });
+    
+    // Check if all required attributes are present and valid
+    const missingRequired = requiredStudentAttributes.filter(required => {
+      const value = attributes[required.name];
+      if (!value) return true;
+      if (required.values && !required.values.includes(value)) return true;
+      return false;
+    });
+    
+    if (missingRequired.length > 0) {
+      const missingNames = missingRequired.map(r => r.name).join(', ');
+      const invalidValues = missingRequired
+        .filter(r => r.values && attributes[r.name] && !r.values.includes(attributes[r.name]))
+        .map(r => `${r.name} (must be one of: ${r.values?.join(', ')})`)
+        .join(', ');
+      
+      let message = `Please fill in all required attributes: ${missingNames}`;
+      if (invalidValues) {
+        message += `\nInvalid values for: ${invalidValues}`;
+      }
+      alert(message);
+      return;
+    }
+
     const newStudent: Student = {
       id: `${Date.now()}-${Math.random()}`,
       name: newStudentName,
@@ -168,6 +214,7 @@ function App() {
           <PeopleList
             students={{
               list: students,
+              requiredAttributes: requiredStudentAttributes,
               selectedId: selectedStudentId,
               newName: newStudentName,
               setNewName: setNewStudentName,
@@ -207,6 +254,9 @@ function App() {
                   };
                 }));
               },
+              onAddRequiredAttribute: handleAddRequiredAttribute,
+              onRemoveRequiredAttribute: handleRemoveRequiredAttribute,
+              onUpdateRequiredAttributeValues: handleUpdateRequiredAttributeValues,
             }}
             educators={{
               list: educators,
