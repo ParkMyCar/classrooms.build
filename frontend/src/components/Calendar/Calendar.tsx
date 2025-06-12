@@ -59,36 +59,52 @@ export function Calendar({
       return true;  // Monday through Friday
     });
 
-  const isSlotSelected = (day: number, time: number) => {
-    return selectedSlots.some(slot => slot.day === day && slot.time === time);
-  };
-
   const getSlotMode = (day: number, time: number): SelectionMode | undefined => {
     const slot = selectedSlots.find(slot => slot.day === day && slot.time === time);
     return slot?.mode;
   };
 
   const handleMouseDown = useCallback((day: number, time: number) => {
-    const isSelected = isSlotSelected(day, time);
-    setIsSelecting(!isSelected);
-    setIsDeselecting(isSelected);
-    
-    if (isSelected) {
-      onAvailabilityChange?.(selectedSlots.filter(slot => !(slot.day === day && slot.time === time)));
+    const slotIndex = selectedSlots.findIndex(slot => slot.day === day && slot.time === time);
+    const slot = selectedSlots[slotIndex];
+
+    if (slot) {
+      if (slot.mode === currentMode) {
+        // Deselect if same mode
+        onAvailabilityChange?.(selectedSlots.filter(slot => !(slot.day === day && slot.time === time)));
+        setIsSelecting(false);
+        setIsDeselecting(true);
+      } else {
+        // Update to new mode and start selecting
+        const updatedSlots = [...selectedSlots];
+        updatedSlots[slotIndex] = { ...slot, mode: currentMode };
+        onAvailabilityChange?.(updatedSlots);
+        setIsSelecting(true);
+        setIsDeselecting(false);
+      }
     } else {
+      // Add new slot and start selecting
       onAvailabilityChange?.([...selectedSlots, { day, time, mode: currentMode }]);
+      setIsSelecting(true);
+      setIsDeselecting(false);
     }
   }, [selectedSlots, onAvailabilityChange, currentMode]);
 
   const handleMouseEnter = useCallback((day: number, time: number) => {
-    if (isSelecting || isDeselecting) {
-      if (isDeselecting) {
-        onAvailabilityChange?.(selectedSlots.filter(slot => !(slot.day === day && slot.time === time)));
-      } else {
-        if (!isSlotSelected(day, time)) {
-          onAvailabilityChange?.([...selectedSlots, { day, time, mode: currentMode }]);
+    if (isSelecting) {
+      const slotIndex = selectedSlots.findIndex(slot => slot.day === day && slot.time === time);
+      const slot = selectedSlots[slotIndex];
+      if (slot) {
+        if (slot.mode !== currentMode) {
+          const updatedSlots = [...selectedSlots];
+          updatedSlots[slotIndex] = { ...slot, mode: currentMode };
+          onAvailabilityChange?.(updatedSlots);
         }
+      } else {
+        onAvailabilityChange?.([...selectedSlots, { day, time, mode: currentMode }]);
       }
+    } else if (isDeselecting) {
+      onAvailabilityChange?.(selectedSlots.filter(slot => !(slot.day === day && slot.time === time)));
     }
   }, [isSelecting, isDeselecting, selectedSlots, onAvailabilityChange, currentMode]);
 
