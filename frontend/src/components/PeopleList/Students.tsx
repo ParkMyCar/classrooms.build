@@ -22,9 +22,6 @@ interface StudentsProps {
   onAdd: (attributes: Record<string, string>) => void;
   onSelect: (id: string) => void;
   onDelete: (id: string) => void;
-  onUpdateAttribute: (idx: number, attrIdx: number, key: string, value: string) => void;
-  onRemoveAttribute: (idx: number, attrIdx: number) => void;
-  onAddAttribute: (idx: number) => void;
   onAddRequiredAttribute: (name: string, values: string[] | null) => void;
   onRemoveRequiredAttribute: (name: string) => void;
   onUpdateRequiredAttributeValues: (name: string, values: string[] | null) => void;
@@ -39,9 +36,6 @@ export const Students: React.FC<StudentsProps> = ({
   onAdd,
   onSelect,
   onDelete,
-  onUpdateAttribute,
-  onRemoveAttribute,
-  onAddAttribute,
   onAddRequiredAttribute,
   onRemoveRequiredAttribute,
   onUpdateRequiredAttributeValues,
@@ -255,14 +249,16 @@ export const Students: React.FC<StudentsProps> = ({
             </form>
           </div>
         </li>
-        {list.map((student, idx) => (
-          <li key={student.id} className={styles['list-item']}>
+        {list.map((student) => (
+          <li
+            key={student.id}
+            className={`${styles['student-item']} ${
+              selectedId === student.id ? styles['selected'] : ''
+            }`}
+            onClick={() => onSelect(student.id)}
+          >
             <div
-              className={
-                styles['group-box'] +
-                (student.id === selectedId ? ' ' + styles['selected'] : '')
-              }
-              onClick={() => onSelect(student.id)}
+              className={styles['group-box']}
               style={{ cursor: 'pointer', position: 'relative' }}
               data-student-id={student.id}
             >
@@ -282,43 +278,13 @@ export const Students: React.FC<StudentsProps> = ({
               </button>
               <span className={styles['name']}>{student.name}</span>
               <ul className={styles['attr-list']}>
-                {Object.entries(student.attributes).map(([key, value], attrIdx) => (
+                {Object.entries(student.attributes).map(([key, value]) => (
                   <li key={key} className={styles['attr-list-item']}>
-                    <input
-                      className={styles['attr-key-input']}
-                      type="text"
-                      value={key}
-                      onChange={e => {
-                        onUpdateAttribute(idx, attrIdx, e.target.value, value);
-                      }}
-                      placeholder="Key"
-                    />
-                    <input
-                      className={styles['attr-value-input']}
-                      type="text"
-                      value={value}
-                      onChange={e => {
-                        onUpdateAttribute(idx, attrIdx, key, e.target.value);
-                      }}
-                      placeholder="Value"
-                    />
-                    <button
-                      type="button"
-                      className={styles['remove-attr-btn']}
-                      onClick={() => onRemoveAttribute(idx, attrIdx)}
-                    >
-                      &times;
-                    </button>
+                    <span className={styles['attr-key']}>{key}:</span>
+                    <span className={styles['attr-value']}>{value}</span>
                   </li>
                 ))}
               </ul>
-              <button
-                type="button"
-                className={styles['add-attr-btn']}
-                onClick={() => onAddAttribute(idx)}
-              >
-                + Attribute
-              </button>
             </div>
           </li>
         ))}

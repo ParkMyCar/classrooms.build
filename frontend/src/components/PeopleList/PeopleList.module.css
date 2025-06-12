@@ -59,6 +59,19 @@
 
 .attr-list-item {
   margin-bottom: 2px;
+  display: flex;
+  gap: 4px;
+  align-items: baseline;
+}
+
+.attr-key {
+  color: #64748b;
+  font-weight: 500;
+}
+
+.attr-value {
+  color: #1e293b;
+  font-style: italic;
 }
 
 .people-card {
