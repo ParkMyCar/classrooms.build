@@ -58,12 +58,12 @@
   color: #374151;
 }
 
-.available {
+.unselected {
   background-color: white;
   cursor: pointer;
 }
 
-.available:hover {
+.unselected:hover {
   background-color: #f3f4f6;
 }
 
@@ -77,12 +77,12 @@
   background-color: #fecaca;
 }
 
-.preferNot {
+.prefer-not {
   background-color: #ffedd5;
   cursor: pointer;
 }
 
-.preferNot:hover {
+.prefer-not:hover {
   background-color: #fed7aa;
 }
 

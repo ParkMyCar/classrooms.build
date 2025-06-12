@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { format, addDays, startOfWeek, addMinutes } from 'date-fns';
+import { format, addDays, startOfWeek } from 'date-fns';
 import styles from './Calendar.module.css';
 import { type SelectionMode } from '../SelectionMode/SelectionMode';
 
@@ -139,7 +139,7 @@ export function Calendar({
               <div
                 key={`${dayIndex}-${time}`}
                 className={`${styles.timeSlot} ${
-                  slotMode ? styles[slotMode] : styles.available
+                  slotMode ? styles[slotMode] : styles.unselected
                 }`}
                 data-block-size={blockSizeMinutes}
                 onMouseDown={() => handleMouseDown(dayIndex, time)}

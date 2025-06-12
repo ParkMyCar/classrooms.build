@@ -28,7 +28,7 @@ function App() {
 
   return (
     <div className="app">
-      <h1>Speech Therapy Schedule Builder</h1>
+      <h1>classrooms.build</h1>
       
       <div className="controls">
         <div className="time-input">
