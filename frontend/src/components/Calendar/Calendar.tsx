@@ -18,6 +18,7 @@ interface CalendarProps {
   showSunday?: boolean;
   selectedSlots?: TimeSlot[];
   currentMode: SelectionMode;
+  disabled?: boolean;
 }
 
 export function Calendar({ 
@@ -28,7 +29,8 @@ export function Calendar({
   showSaturday = false,
   showSunday = false,
   selectedSlots = [],
-  currentMode
+  currentMode,
+  disabled = false
 }: CalendarProps) {
   const [isSelecting, setIsSelecting] = useState(false);
   const [isDeselecting, setIsDeselecting] = useState(false);
@@ -121,50 +123,57 @@ export function Calendar({
   };
 
   return (
-    <div 
-      className={styles.calendar}
-      onMouseUp={handleMouseUp}
-      onMouseLeave={handleMouseUp}
-      style={{
-        gridTemplateColumns: `80px repeat(${days.length}, 1fr)`
-      }}
-    >
-      {/* Empty corner cell */}
-      <div className={`${styles.timeSlot} ${styles.timeLabel}`} data-block-size={blockSizeMinutes}></div>
-      
-      {/* Day headers */}
-      {days.map(day => (
-        <div key={day.toString()} className={styles.dayHeader}>
-          {format(day, 'EEE')}
-        </div>
-      ))}
-
-      {/* Time slots */}
-      {timeSlots.map(time => (
-        <>
-          <div 
-            key={`time-${time}`} 
-            className={`${styles.timeSlot} ${styles.timeLabel}`}
-            data-block-size={blockSizeMinutes}
-          >
-            {formatTime(time)}
+    <div className={styles.calendarWrapper} style={{ position: 'relative' }}>
+      <div
+        className={styles.calendar}
+        onMouseUp={disabled ? undefined : handleMouseUp}
+        onMouseLeave={disabled ? undefined : handleMouseUp}
+        style={{
+          gridTemplateColumns: `80px repeat(${days.length}, 1fr)`,
+          pointerEvents: disabled ? 'none' : undefined,
+          filter: disabled ? 'grayscale(0.7) opacity(0.7)' : undefined,
+        }}
+      >
+        {/* Empty corner cell */}
+        <div className={`${styles.timeSlot} ${styles.timeLabel}`} data-block-size={blockSizeMinutes}></div>
+        
+        {/* Day headers */}
+        {days.map(day => (
+          <div key={day.toString()} className={styles.dayHeader}>
+            {format(day, 'EEE')}
           </div>
-          {days.map((_, dayIndex) => {
-            const slotMode = getSlotMode(dayIndex, time);
-            return (
-              <div
-                key={`${dayIndex}-${time}`}
-                className={`${styles.timeSlot} ${
-                  slotMode ? styles[slotMode] : styles.unselected
-                }`}
-                data-block-size={blockSizeMinutes}
-                onMouseDown={() => handleMouseDown(dayIndex, time)}
-                onMouseEnter={() => handleMouseEnter(dayIndex, time)}
-              />
-            );
-          })}
-        </>
-      ))}
+        ))}
+
+        {/* Time slots */}
+        {timeSlots.map(time => (
+          <>
+            <div 
+              key={`time-${time}`} 
+              className={`${styles.timeSlot} ${styles.timeLabel}`}
+              data-block-size={blockSizeMinutes}
+            >
+              {formatTime(time)}
+            </div>
+            {days.map((_, dayIndex) => {
+              const slotMode = getSlotMode(dayIndex, time);
+              return (
+                <div
+                  key={`${dayIndex}-${time}`}
+                  className={`${styles.timeSlot} ${
+                    slotMode ? styles[slotMode] : styles.unselected
+                  }`}
+                  data-block-size={blockSizeMinutes}
+                  onMouseDown={disabled ? undefined : () => handleMouseDown(dayIndex, time)}
+                  onMouseEnter={disabled ? undefined : () => handleMouseEnter(dayIndex, time)}
+                />
+              );
+            })}
+          </>
+        ))}
+      </div>
+      {disabled && (
+        <div className={styles.disabledOverlay} />
+      )}
     </div>
   );
 } 
