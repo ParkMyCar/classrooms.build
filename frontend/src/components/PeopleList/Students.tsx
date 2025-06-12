@@ -6,6 +6,11 @@ interface Student {
   name: string;
   attributes: Record<string, string>;
   schedule: { day: number; time: number; mode: string }[];
+  educatorMeetingRequirements: {
+    educatorId: string;
+    meetingsPerWeek: number;
+    meetingDurationMinutes: number;
+  }[];
 }
 
 interface RequiredAttribute {
@@ -19,12 +24,15 @@ interface StudentsProps {
   selectedId: string | null;
   newName: string;
   setNewName: (name: string) => void;
-  onAdd: (attributes: Record<string, string>) => void;
+  onAdd: (attributes: Record<string, string>, educatorRequirements: { educatorId: string; meetingsPerWeek: number; meetingDurationMinutes: number }[]) => void;
   onSelect: (id: string) => void;
   onDelete: (id: string) => void;
   onAddRequiredAttribute: (name: string, values: string[] | null) => void;
   onRemoveRequiredAttribute: (name: string) => void;
   onUpdateRequiredAttributeValues: (name: string, values: string[] | null) => void;
+  educators: Array<{ id: string; name: string }>;
+  onAddEducatorRequirement: (studentId: string, requirement: { educatorId: string; meetingsPerWeek: number; meetingDurationMinutes: number }) => void;
+  onRemoveEducatorRequirement: (studentId: string, educatorId: string) => void;
 }
 
 export const Students: React.FC<StudentsProps> = ({
@@ -39,11 +47,19 @@ export const Students: React.FC<StudentsProps> = ({
   onAddRequiredAttribute,
   onRemoveRequiredAttribute,
   onUpdateRequiredAttributeValues,
+  educators,
+  onAddEducatorRequirement,
+  onRemoveEducatorRequirement,
 }) => {
   const [newRequiredAttr, setNewRequiredAttr] = useState('');
   const [newRequiredValues, setNewRequiredValues] = useState('');
   const [editingValues, setEditingValues] = useState<string | null>(null);
   const [newStudentAttributes, setNewStudentAttributes] = useState<{ key: string; value: string }[]>([]);
+  const [newEducatorRequirements, setNewEducatorRequirements] = useState<{
+    educatorId: string;
+    meetingsPerWeek: number;
+    meetingDurationMinutes: number;
+  }[]>([]);
 
   const handleAddRequiredAttribute = (e: React.FormEvent) => {
     e.preventDefault();
@@ -76,6 +92,29 @@ export const Students: React.FC<StudentsProps> = ({
     onUpdateRequiredAttributeValues(name, values);
     setEditingValues(null);
     setNewRequiredValues('');
+  };
+
+  const handleAddEducatorRequirement = () => {
+    setNewEducatorRequirements(prev => [
+      ...prev,
+      { educatorId: '', meetingsPerWeek: 1, meetingDurationMinutes: 30 }
+    ]);
+  };
+
+  const handleRemoveEducatorRequirement = (index: number) => {
+    setNewEducatorRequirements(prev => prev.filter((_, i) => i !== index));
+  };
+
+  const handleUpdateEducatorRequirement = (
+    index: number,
+    field: 'educatorId' | 'meetingsPerWeek' | 'meetingDurationMinutes',
+    value: string | number
+  ) => {
+    setNewEducatorRequirements(prev =>
+      prev.map((req, i) =>
+        i === index ? { ...req, [field]: value } : req
+      )
+    );
   };
 
   return (
@@ -173,14 +212,13 @@ export const Students: React.FC<StudentsProps> = ({
               className={styles['add-form'] + ' ' + styles['add-form-students']}
               onSubmit={e => {
                 e.preventDefault();
-                // Convert newStudentAttributes to the format expected by the parent
                 const attributes: Record<string, string> = {};
                 newStudentAttributes.forEach(attr => {
                   if (attr.key.trim()) attributes[attr.key] = attr.value;
                 });
-                onAdd(attributes);
-                // Clear the attributes after submission
+                onAdd(attributes, newEducatorRequirements);
                 setNewStudentAttributes([]);
+                setNewEducatorRequirements([]);
               }}
             >
               <div className={styles['add-form-name']}>
@@ -246,6 +284,66 @@ export const Students: React.FC<StudentsProps> = ({
                   ))}
                 </div>
               )}
+              <div className={styles['educator-requirements']}>
+                <h4 className={styles['educator-requirements-title']}>Educator Meetings</h4>
+                {newEducatorRequirements.map((req, index) => (
+                  <div key={index} className={styles['educator-requirement']}>
+                    <span>
+                      <span>Meet with:</span>
+                      <select
+                        value={req.educatorId}
+                        onChange={e => handleUpdateEducatorRequirement(index, 'educatorId', e.target.value)}
+                        required
+                      >
+                        <option value="">Select Educator</option>
+                        {educators.map(educator => (
+                          <option key={educator.id} value={educator.id}>
+                            {educator.name}
+                          </option>
+                        ))}
+                      </select>
+                    </span>
+                    <span>
+                      <span>Meetings/week:</span>
+                      <input
+                        type="number"
+                        min="1"
+                        max="7"
+                        placeholder="Meetings/week"
+                        value={req.meetingsPerWeek}
+                        onChange={e => handleUpdateEducatorRequirement(index, 'meetingsPerWeek', parseInt(e.target.value))}
+                        required
+                      />
+                    </span>
+                    <span>
+                      <span>Duration (min):</span>
+                      <input
+                        type="number"
+                        min="5"
+                        step="5"
+                        placeholder="Duration (min)"
+                        value={req.meetingDurationMinutes}
+                        onChange={e => handleUpdateEducatorRequirement(index, 'meetingDurationMinutes', parseInt(e.target.value))}
+                        required
+                      />
+                    </span>
+                    <button
+                      type="button"
+                      className={styles['remove-btn']}
+                      onClick={() => handleRemoveEducatorRequirement(index)}
+                    >
+                      ×
+                    </button>
+                  </div>
+                ))}
+                <button
+                  type="button"
+                  className={styles['add-educator-btn']}
+                  onClick={handleAddEducatorRequirement}
+                >
+                  + Add Educator Requirement
+                </button>
+              </div>
             </form>
           </div>
         </li>
@@ -285,6 +383,31 @@ export const Students: React.FC<StudentsProps> = ({
                   </li>
                 ))}
               </ul>
+              <div className={styles['educator-requirements']}>
+                <h4>Educator Meeting Requirements</h4>
+                <ul>
+                  {student.educatorMeetingRequirements.map(req => {
+                    const educator = educators.find(e => e.id === req.educatorId);
+                    return (
+                      <li key={req.educatorId} className={styles['educator-requirement']}>
+                        <span>{educator?.name || 'Unknown Educator'}</span>
+                        <span>{req.meetingsPerWeek} meetings/week</span>
+                        <span>{req.meetingDurationMinutes} min/meeting</span>
+                        <button
+                          type="button"
+                          className={styles['remove-btn']}
+                          onClick={e => {
+                            e.stopPropagation();
+                            onRemoveEducatorRequirement(student.id, req.educatorId);
+                          }}
+                        >
+                          ×
+                        </button>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
             </div>
           </li>
         ))}

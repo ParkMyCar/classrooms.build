@@ -17,12 +17,17 @@ interface PeopleListProps {
       name: string;
       attributes: Record<string, string>;
       schedule: { day: number; time: number; mode: string }[];
+      educatorMeetingRequirements: {
+        educatorId: string;
+        meetingsPerWeek: number;
+        meetingDurationMinutes: number;
+      }[];
     }>;
     requiredAttributes: RequiredAttribute[];
     selectedId: string | null;
     newName: string;
     setNewName: (name: string) => void;
-    onAdd: (attributes: Record<string, string>) => void;
+    onAdd: (attributes: Record<string, string>, educatorRequirements: { educatorId: string; meetingsPerWeek: number; meetingDurationMinutes: number }[]) => void;
     onSelect: (id: string) => void;
     onDelete: (id: string) => void;
     onUpdateAttribute: (idx: number, attrIdx: number, key: string, value: string) => void;
@@ -31,6 +36,9 @@ interface PeopleListProps {
     onAddRequiredAttribute: (name: string, values: string[] | null) => void;
     onRemoveRequiredAttribute: (name: string) => void;
     onUpdateRequiredAttributeValues: (name: string, values: string[] | null) => void;
+    educators: Array<{ id: string; name: string }>;
+    onAddEducatorRequirement: (studentId: string, requirement: { educatorId: string; meetingsPerWeek: number; meetingDurationMinutes: number }) => void;
+    onRemoveEducatorRequirement: (studentId: string, educatorId: string) => void;
   };
   educators: {
     list: Array<{

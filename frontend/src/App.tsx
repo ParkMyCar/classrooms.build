@@ -9,6 +9,11 @@ interface Student {
   name: string;
   attributes: Record<string, string>;
   schedule: { day: number; time: number; mode: SelectionModeType }[];
+  educatorMeetingRequirements: {
+    educatorId: string;
+    meetingsPerWeek: number;
+    meetingDurationMinutes: number;
+  }[];
 }
 
 interface Educator {
@@ -66,7 +71,7 @@ function App() {
   };
 
   // Add a new student
-  const handleAddStudent = (attributes: Record<string, string>) => {
+  const handleAddStudent = (attributes: Record<string, string>, educatorRequirements: { educatorId: string; meetingsPerWeek: number; meetingDurationMinutes: number }[]) => {
     if (!newStudentName.trim()) return;
     
     // Check if all required attributes are present and valid
@@ -92,15 +97,62 @@ function App() {
       return;
     }
 
+    // Check if at least one educator requirement is specified
+    if (educatorRequirements.length === 0) {
+      alert('Please specify at least one educator meeting requirement.');
+      return;
+    }
+
+    // Check if all educator requirements are valid
+    const invalidEducatorReqs = educatorRequirements.filter(req => 
+      !req.educatorId || req.meetingsPerWeek < 1 || req.meetingDurationMinutes < 5
+    );
+    if (invalidEducatorReqs.length > 0) {
+      alert('Please fill in all educator requirement fields correctly.');
+      return;
+    }
+
     const newStudent: Student = {
       id: `${Date.now()}-${Math.random()}`,
       name: newStudentName,
       attributes,
       schedule: [],
+      educatorMeetingRequirements: educatorRequirements,
     };
     setStudents(prev => [...prev, newStudent]);
     setSelectedStudentId(newStudent.id);
     setNewStudentName('');
+  };
+
+  const handleAddEducatorRequirement = (studentId: string, requirement: { educatorId: string; meetingsPerWeek: number; meetingDurationMinutes: number }) => {
+    setStudents(students =>
+      students.map(student =>
+        student.id === studentId
+          ? {
+              ...student,
+              educatorMeetingRequirements: [
+                ...student.educatorMeetingRequirements,
+                requirement,
+              ],
+            }
+          : student
+      )
+    );
+  };
+
+  const handleRemoveEducatorRequirement = (studentId: string, educatorId: string) => {
+    setStudents(students =>
+      students.map(student =>
+        student.id === studentId
+          ? {
+              ...student,
+              educatorMeetingRequirements: student.educatorMeetingRequirements.filter(
+                req => req.educatorId !== educatorId
+              ),
+            }
+          : student
+      )
+    );
   };
 
   // Add a new educator
@@ -251,6 +303,9 @@ function App() {
               onAddRequiredAttribute: handleAddRequiredAttribute,
               onRemoveRequiredAttribute: handleRemoveRequiredAttribute,
               onUpdateRequiredAttributeValues: handleUpdateRequiredAttributeValues,
+              educators: educators.map(e => ({ id: e.id, name: e.name })),
+              onAddEducatorRequirement: handleAddEducatorRequirement,
+              onRemoveEducatorRequirement: handleRemoveEducatorRequirement,
             }}
             educators={{
               list: educators,

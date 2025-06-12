@@ -354,4 +354,134 @@
   outline: none;
   border-color: #2563eb;
   box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
+}
+
+.educator-requirements {
+  padding: 0.5rem;
+  border-top: 1px solid #eee;
+}
+
+.educator-requirements-title {
+  text-align: center;
+}
+
+.educator-requirements h4 {
+  margin: 0 0 0.5rem 0;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.educator-requirement {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  gap: 0.5rem;
+  padding: 0.25rem 0;
+}
+
+.educator-requirement span {
+  color: #444;
+}
+
+.educator-requirement .remove-btn {
+  background: none;
+  border: none;
+  color: #888;
+  cursor: pointer;
+  padding: 0 0.25rem;
+  font-size: 1.2rem;
+  line-height: 1;
+}
+
+.educator-requirement .remove-btn:hover {
+  color: #ff4444;
+}
+
+.add-educator-requirement {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  padding: 0.5rem;
+  background: #f8f8f8;
+  border-radius: 4px;
+}
+
+.add-educator-requirement select,
+.add-educator-requirement input {
+  padding: 0.25rem 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
+
+.add-educator-requirement input[type="number"] {
+  width: 100px;
+}
+
+.add-educator-requirement button {
+  padding: 0.25rem 0.75rem;
+  background: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.add-educator-requirement button:hover {
+  background: #45a049;
+}
+
+.add-educator-btn {
+  margin-top: 0.5rem;
+  padding: 0.25rem 0.75rem;
+  background: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  width: 100%;
+}
+
+.add-educator-btn:hover {
+  background: #45a049;
+}
+
+.educator-requirements .educator-requirement {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  padding: 0.5rem;
+  background: #f8f8f8;
+  border-radius: 4px;
+  align-items: center;
+}
+
+.educator-requirements .educator-requirement select,
+.educator-requirements .educator-requirement input {
+  padding: 0.25rem 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
+
+.educator-requirements .educator-requirement input[type="number"] {
+  width: 100px;
+}
+
+.educator-requirements .educator-requirement .remove-btn {
+  background: none;
+  border: none;
+  color: #888;
+  cursor: pointer;
+  padding: 0 0.25rem;
+  font-size: 1.2rem;
+  line-height: 1;
+}
+
+.educator-requirements .educator-requirement .remove-btn:hover {
+  color: #ff4444;
 } 
