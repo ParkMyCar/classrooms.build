@@ -82,18 +82,13 @@ function App() {
             Sat
           </label>
         </div>
-        <button 
-          className="clear-button"
-          onClick={handleClearAll}
-          disabled={selectedSlots.length === 0}
-        >
-          Clear All
-        </button>
       </div>
 
       <SelectionMode
         currentMode={selectionMode}
         onModeChange={setSelectionMode}
+        onClearAll={handleClearAll}
+        clearDisabled={selectedSlots.length === 0}
       />
 
       <div className="calendar-container">
