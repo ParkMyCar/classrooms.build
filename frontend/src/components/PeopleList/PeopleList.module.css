@@ -1,4 +1,4 @@
-.add-attr-btn, .add-student-btn {
+.add-attr-btn, .add-btn {
   padding: 6px 12px;
   border-radius: 4px;
   border: 1px solid #d1d5db;
@@ -7,28 +7,28 @@
   font-size: 0.95rem;
 }
 
-.add-attr-btn:hover, .add-student-btn:hover {
+.add-attr-btn:hover, .add-btn:hover {
   background: #e5e7eb;
 }
 
-.student-list-ul {
+.list-ul {
   list-style: none;
   padding: 0;
   margin: 0;
 }
 
-.student-list-ul li button,
-.student-list-ul li {
+.list-ul li button,
+.list-ul li {
   text-align: left;
 }
 
-.add-student-form {
+.add-form {
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
-.add-student-form input[type="text"] {
+.add-form input[type="text"] {
   height: 32px;
   font-size: 1em;
   font-weight: 500;
@@ -45,7 +45,7 @@
   min-width: 0;
 }
 
-.student-attr-list {
+.attr-list {
   margin: 2px 0 8px 18px;
   padding: 0;
   list-style: none;
@@ -53,11 +53,11 @@
   color: #555;
 }
 
-.student-attr-list-item {
+.attr-list-item {
   margin-bottom: 2px;
 }
 
-.student-card {
+.people-card {
   background: #fff;
   border: 1px solid #e5e7eb;
   border-radius: 8px;
@@ -67,7 +67,7 @@
   gap: 16px;
 }
 
-.student-group-box {
+.group-box {
   border: 1px solid #e0e7ef;
   background: #f8fafc;
   border-radius: 8px;
@@ -78,13 +78,13 @@
   flex-direction: column;
 }
 
-.student-group-box:hover {
+.group-box:hover {
   background: #e0e7ef;
   border-color: #60a5fa;
   box-shadow: 0 2px 8px rgba(96,165,250,0.08);
 }
 
-.student-name {
+.name {
   font-weight: bold;
   color: #1e293b;
   font-size: 1.08em;
@@ -92,24 +92,55 @@
   display: block;
 }
 
-.add-student-group-box {
+.add-group-box {
   cursor: default !important;
   background: #f8fafc;
   border-color: #e0e7ef;
   box-shadow: 0 1px 2px rgba(0,0,0,0.03);
 }
-.add-student-group-box:hover {
+
+.add-group-box:hover {
   background: #f8fafc;
   border-color: #e0e7ef;
   box-shadow: 0 1px 2px rgba(0,0,0,0.03);
 }
 
-.student-group-box:has(.delete-student-btn:hover),
-.student-group-box.delete-hover {
+.group-box:has(.delete-btn:hover),
+.group-box.delete-hover {
   background: #fee2e2;
   border-color: #ef4444;
   box-shadow: 0 2px 8px rgba(239,68,68,0.08);
 }
-.delete-student-btn:hover svg path {
+
+.delete-btn:hover svg path {
   stroke: #ef4444;
+}
+
+.tabs {
+  display: flex;
+  gap: 8px;
+  border-bottom: 1px solid #e5e7eb;
+  margin: -16px -16px 16px -16px;
+  padding: 0 16px;
+}
+
+.tab {
+  padding: 12px 16px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #6b7280;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.tab:hover {
+  color: #1e293b;
+}
+
+.tab.active {
+  color: #2563eb;
+  border-bottom-color: #2563eb;
 } 
