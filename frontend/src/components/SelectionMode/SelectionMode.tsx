@@ -1,4 +1,3 @@
-import React from "react";
 import styles from "./SelectionMode.module.css";
 
 export type SelectionMode = "cannot" | "prefer-not" | "available" | "preferred";
