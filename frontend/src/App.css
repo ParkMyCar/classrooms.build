@@ -53,11 +53,16 @@ h1 {
   margin-bottom: 2rem;
 }
 
-.time-controls {
+.controls {
   display: flex;
+  align-items: center;
   gap: 2rem;
   justify-content: center;
   margin-bottom: 2rem;
+  flex-wrap: wrap;
+  background-color: #f3f4f6;
+  padding: 1rem;
+  border-radius: 8px;
 }
 
 .time-input {
@@ -69,20 +74,64 @@ h1 {
 .time-input label {
   font-weight: 500;
   color: #374151;
+  white-space: nowrap;
 }
 
-.time-input input {
-  width: 80px;
+.time-input input[type="time"],
+.time-input select {
   padding: 0.5rem;
   border: 1px solid #d1d5db;
   border-radius: 4px;
   font-size: 1rem;
+  background-color: white;
+  font-family: inherit;
 }
 
-.time-input input:focus {
+.time-input input[type="time"] {
+  width: 120px;
+}
+
+.time-input select {
+  width: 100px;
+}
+
+.time-input input[type="time"]:focus,
+.time-input select:focus {
   outline: none;
   border-color: #3b82f6;
   box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+}
+
+/* Remove the up/down arrows from time input */
+.time-input input[type="time"]::-webkit-inner-spin-button,
+.time-input input[type="time"]::-webkit-calendar-picker-indicator {
+  opacity: 1;
+  cursor: pointer;
+}
+
+.weekend-toggles {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  padding-left: 1rem;
+  border-left: 1px solid #d1d5db;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-weight: 500;
+  color: #374151;
+  cursor: pointer;
+  font-size: 0.875rem;
+}
+
+.checkbox-label input[type="checkbox"] {
+  width: 0.875rem;
+  height: 0.875rem;
+  cursor: pointer;
+  margin: 0;
 }
 
 .calendar-container {

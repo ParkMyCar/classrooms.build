@@ -1,22 +1,28 @@
 import { useState, useCallback } from 'react';
-import { format, addDays, startOfWeek } from 'date-fns';
+import { format, addDays, startOfWeek, addMinutes } from 'date-fns';
 import styles from './Calendar.module.css';
 
 interface TimeSlot {
   day: number;
-  time: number;
+  time: number;  // Now represents minutes since start of day
 }
 
 interface CalendarProps {
   onAvailabilityChange?: (slots: TimeSlot[]) => void;
   startHour?: number;  // 24-hour format (0-23)
   endHour?: number;    // 24-hour format (0-23)
+  blockSizeMinutes?: number;  // Size of each time block in minutes
+  showSaturday?: boolean;
+  showSunday?: boolean;
 }
 
 export function Calendar({ 
   onAvailabilityChange,
   startHour = 8,  // Default to 8 AM
-  endHour = 16    // Default to 4 PM
+  endHour = 16,   // Default to 4 PM
+  blockSizeMinutes = 15,  // Default to 15-minute blocks
+  showSaturday = false,
+  showSunday = false
 }: CalendarProps) {
   const [selectedSlots, setSelectedSlots] = useState<TimeSlot[]>([]);
   const [isSelecting, setIsSelecting] = useState(false);
@@ -26,17 +32,27 @@ export function Calendar({
   const validEndHour = Math.max(0, Math.min(23, endHour));
   const adjustedEndHour = validEndHour <= validStartHour ? validStartHour + 8 : validEndHour;
   
-  // Generate time slots based on start and end hours
+  // Calculate total minutes in the day range
+  const startMinutes = validStartHour * 60;
+  const endMinutes = adjustedEndHour * 60;
+  const totalMinutes = endMinutes - startMinutes;
+  
+  // Generate time slots based on block size
   const timeSlots = Array.from(
-    { length: adjustedEndHour - validStartHour + 1 },
-    (_, i) => i + validStartHour
+    { length: Math.ceil(totalMinutes / blockSizeMinutes) },
+    (_, i) => startMinutes + (i * blockSizeMinutes)
   );
   
   // Generate days of the week
   const today = new Date();
   const weekStart = startOfWeek(today);
-  const days = Array.from({ length: 7 }, (_, i) => addDays(weekStart, i));
-
+  const days = Array.from({ length: 7 }, (_, i) => addDays(weekStart, i))
+    .filter((_, index) => {
+      if (index === 0) return showSunday;  // Sunday
+      if (index === 6) return showSaturday;  // Saturday
+      return true;  // Monday through Friday
+    });
+  
   const handleMouseDown = useCallback((day: number, time: number) => {
     setIsSelecting(true);
     setSelectedSlots([{ day, time }]);
@@ -56,14 +72,24 @@ export function Calendar({
     setIsSelecting(false);
   }, []);
 
+  // Format time for display
+  const formatTime = (minutes: number) => {
+    const date = new Date();
+    date.setHours(Math.floor(minutes / 60), minutes % 60);
+    return format(date, 'h:mm a');
+  };
+
   return (
     <div 
       className={styles.calendar}
       onMouseUp={handleMouseUp}
       onMouseLeave={handleMouseUp}
+      style={{
+        gridTemplateColumns: `80px repeat(${days.length}, 1fr)`
+      }}
     >
       {/* Empty corner cell */}
-      <div className={`${styles.timeSlot} ${styles.timeLabel}`}></div>
+      <div className={`${styles.timeSlot} ${styles.timeLabel}`} data-block-size={blockSizeMinutes}></div>
       
       {/* Day headers */}
       {days.map(day => (
@@ -75,13 +101,18 @@ export function Calendar({
       {/* Time slots */}
       {timeSlots.map(time => (
         <>
-          <div key={`time-${time}`} className={`${styles.timeSlot} ${styles.timeLabel}`}>
-            {format(new Date().setHours(time, 0), 'h a')}
+          <div 
+            key={`time-${time}`} 
+            className={`${styles.timeSlot} ${styles.timeLabel}`}
+            data-block-size={blockSizeMinutes}
+          >
+            {formatTime(time)}
           </div>
           {days.map((_, dayIndex) => (
             <div
               key={`${dayIndex}-${time}`}
               className={`${styles.timeSlot} ${styles.available}`}
+              data-block-size={blockSizeMinutes}
               onMouseDown={() => handleMouseDown(dayIndex, time)}
               onMouseEnter={() => handleMouseEnter(dayIndex, time)}
             />
