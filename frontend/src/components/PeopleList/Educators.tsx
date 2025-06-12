@@ -31,7 +31,15 @@ export const Educators: React.FC<EducatorsProps> = ({
     <>
       <ul className={styles["list-ul"]}>
         <li className={styles["add-list-item"]}>
-          <div className={styles["group-box"] + " " + styles["add-group-box"]}>
+          <div
+            className={
+              styles["group-box"] +
+              " " +
+              styles["add-group-box"] +
+              " " +
+              styles["add-educator-box"]
+            }
+          >
             <form
               className={styles["add-form"]}
               onSubmit={(e) => {

@@ -507,8 +507,7 @@ export const Students: React.FC<StudentsProps> = ({
                 ))}
               </ul>
               <div className={styles["educator-requirements"]}>
-                <h4>Educator Meeting Requirements</h4>
-                <ul>
+                <ul className={styles["attr-list"]}>
                   {student.educatorMeetingRequirements.map((req) => {
                     const educator = educators.find(
                       (e) => e.id === req.educatorId
@@ -516,24 +515,11 @@ export const Students: React.FC<StudentsProps> = ({
                     return (
                       <li
                         key={req.educatorId}
-                        className={styles["educator-requirement"]}
+                        className={styles["attr-list-item"]}
                       >
-                        <span>{educator?.name || "Unknown Educator"}</span>
+                        <h4>{educator?.name || "Unknown Educator"}</h4>
                         <span>{req.meetingsPerWeek} meetings/week</span>
                         <span>{req.meetingDurationMinutes} min/meeting</span>
-                        <button
-                          type="button"
-                          className={styles["remove-btn"]}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            onRemoveEducatorRequirement(
-                              student.id,
-                              req.educatorId
-                            );
-                          }}
-                        >
-                          - Remove Requirement
-                        </button>
                       </li>
                     );
                   })}
