@@ -143,7 +143,6 @@ function App() {
                   </form>
                 </div>
               </li>
-              {students.length === 0 && <li>No students yet.</li>}
               {students.map((student, studentIdx) => (
                 <li key={student.id} className="student-list-item">
                   <div

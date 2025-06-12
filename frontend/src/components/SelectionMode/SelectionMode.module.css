@@ -1,7 +1,6 @@
 .container {
   display: flex;
   gap: 16px;
-  margin-bottom: 16px;
   padding: 12px;
   background-color: #f9fafb;
   border: 1px solid #e5e7eb;
