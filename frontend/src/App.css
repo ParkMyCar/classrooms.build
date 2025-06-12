@@ -261,14 +261,6 @@ h1 {
   text-align: left;
 }
 
-.add-student-list-item {
-  background: none;
-  border-radius: 6px;
-  padding: 12px 8px 16px 8px;
-  margin-bottom: 16px;
-  border: none;
-}
-
 .add-student-form {
   display: flex;
   align-items: center;
