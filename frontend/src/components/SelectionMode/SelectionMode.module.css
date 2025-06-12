@@ -1,0 +1,72 @@
+.container {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+  padding: 12px;
+  background-color: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+}
+
+.modeButton {
+  padding: 8px 16px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.modeButton:hover {
+  transform: translateY(-1px);
+}
+
+.modeButton.active {
+  transform: translateY(-1px);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+/* Cannot Schedule - Red */
+.cannot {
+  background-color: #fee2e2;
+  color: #991b1b;
+}
+
+.cannot:hover,
+.cannot.active {
+  background-color: #fecaca;
+}
+
+/* Prefer Not - Orange */
+.preferNot {
+  background-color: #ffedd5;
+  color: #92400e;
+}
+
+.preferNot:hover,
+.preferNot.active {
+  background-color: #fed7aa;
+}
+
+/* Available - Blue */
+.available {
+  background-color: #dbeafe;
+  color: #1e40af;
+}
+
+.available:hover,
+.available.active {
+  background-color: #bfdbfe;
+}
+
+/* Preferred - Green */
+.preferred {
+  background-color: #dcfce7;
+  color: #166534;
+}
+
+.preferred:hover,
+.preferred.active {
+  background-color: #bbf7d0;
+} 

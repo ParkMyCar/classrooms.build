@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Calendar } from './components/Calendar/Calendar'
+import { SelectionMode, type SelectionMode as SelectionModeType } from './components/SelectionMode/SelectionMode'
 import { format, parse } from 'date-fns'
 import './App.css'
 
@@ -10,6 +11,7 @@ function App() {
   const [showSaturday, setShowSaturday] = useState(false);
   const [showSunday, setShowSunday] = useState(false);
   const [selectedSlots, setSelectedSlots] = useState<{ day: number; time: number }[]>([]);
+  const [selectionMode, setSelectionMode] = useState<SelectionModeType>('available');
 
   // Convert time string (HH:mm) to hour number
   const timeToHour = (timeStr: string) => {
@@ -89,6 +91,11 @@ function App() {
           Clear All
         </button>
       </div>
+
+      <SelectionMode
+        currentMode={selectionMode}
+        onModeChange={setSelectionMode}
+      />
 
       <div className="calendar-container">
         <Calendar 
