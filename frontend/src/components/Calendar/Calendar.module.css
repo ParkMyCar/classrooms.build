@@ -59,12 +59,12 @@
 }
 
 .available {
-  background-color: #dbeafe;
+  background-color: white;
   cursor: pointer;
 }
 
 .available:hover {
-  background-color: #bfdbfe;
+  background-color: #f3f4f6;
 }
 
 .selected {
