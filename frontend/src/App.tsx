@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Calendar } from './components/Calendar/Calendar'
 import { SelectionMode, type SelectionMode as SelectionModeType } from './components/SelectionMode/SelectionMode'
+import { StudentList } from './components/StudentList/StudentList'
 import './App.css'
 
 interface Student {
@@ -120,130 +121,48 @@ function App() {
 
       <div className="two-col-layout">
         <div className="left-col">
-          <div className="student-card">
-            <h3>Students</h3>
-            <ul className="student-list-ul">
-              <li className="add-student-list-item">
-                <div className="student-group-box add-student-group-box">
-                  <form
-                    className="add-student-form"
-                    onSubmit={e => {
-                      e.preventDefault();
-                      handleAddStudent();
-                    }}
-                  >
-                    <input
-                      type="text"
-                      placeholder="Student Name"
-                      value={newStudentName}
-                      onChange={e => setNewStudentName(e.target.value)}
-                      style={{ marginRight: 8 }}
-                    />
-                    <button type="submit" className="add-student-btn">+</button>
-                  </form>
-                </div>
-              </li>
-              {students.map((student, studentIdx) => (
-                <li key={student.id} className="student-list-item">
-                  <div
-                    className={`student-group-box${student.id === selectedStudentId ? ' selected' : ''}`}
-                    onClick={() => setSelectedStudentId(student.id)}
-                    style={{ cursor: 'pointer', position: 'relative' }}
-                    data-student-id={student.id}
-                  >
-                    <button
-                      className="delete-student-btn"
-                      type="button"
-                      title="Delete student"
-                      onClick={e => {
-                        e.stopPropagation();
-                        setStudents(students => students.filter((_, i) => i !== studentIdx));
-                        if (selectedStudentId === student.id) setSelectedStudentId(null);
-                      }}
-                      style={{ position: 'absolute', top: 8, right: 8, background: 'none', border: 'none', padding: 0, cursor: 'pointer' }}
-                    >
-                      <svg width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M6.5 7.5V14.5M10 7.5V14.5M13.5 7.5V14.5M3 5.5H17M8.5 3.5H11.5C12.0523 3.5 12.5 3.94772 12.5 4.5V5.5H7.5V4.5C7.5 3.94772 7.94772 3.5 8.5 3.5Z" stroke="#888" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                      </svg>
-                    </button>
-                    <span className="student-name">{student.name}</span>
-                    <ul className="student-attr-list">
-                      {Object.entries(student.attributes).map(([key, value], attrIdx) => (
-                        <li key={key} className="student-attr-list-item">
-                          <input
-                            className="student-attr-key-input"
-                            type="text"
-                            value={key}
-                            onChange={e => {
-                              const newKey = e.target.value;
-                              setStudents(students => students.map((s, i) => {
-                                if (i !== studentIdx) return s;
-                                const entries = Object.entries(s.attributes);
-                                entries[attrIdx][0] = newKey;
-                                const newAttrs: Record<string, string> = {};
-                                entries.forEach(([k, v]) => { newAttrs[k] = v; });
-                                return { ...s, attributes: newAttrs };
-                              }));
-                            }}
-                            placeholder="Key"
-                          />
-                          <input
-                            className="student-attr-value-input"
-                            type="text"
-                            value={value}
-                            onChange={e => {
-                              const newValue = e.target.value;
-                              setStudents(students => students.map((s, i) => {
-                                if (i !== studentIdx) return s;
-                                const entries = Object.entries(s.attributes);
-                                entries[attrIdx][1] = newValue;
-                                const newAttrs: Record<string, string> = {};
-                                entries.forEach(([k, v]) => { newAttrs[k] = v; });
-                                return { ...s, attributes: newAttrs };
-                              }));
-                            }}
-                            placeholder="Value"
-                          />
-                          <button
-                            type="button"
-                            className="remove-attr-btn"
-                            onClick={() => {
-                              setStudents(students => students.map((s, i) => {
-                                if (i !== studentIdx) return s;
-                                const newAttrs: Record<string, string> = {};
-                                Object.entries(s.attributes).forEach(([k, v], idx) => {
-                                  if (idx !== attrIdx) newAttrs[k] = v;
-                                });
-                                return { ...s, attributes: newAttrs };
-                              }));
-                            }}
-                          >
-                            &times;
-                          </button>
-                        </li>
-                      ))}
-                    </ul>
-                    <button
-                      type="button"
-                      className="add-attr-btn"
-                      onClick={() => {
-                        setStudents(students => students.map((s, i) => {
-                          if (i !== studentIdx) return s;
-                          // Add a new empty attribute
-                          return {
-                            ...s,
-                            attributes: { ...s.attributes, [""]: "" }
-                          };
-                        }));
-                      }}
-                    >
-                      + Attribute
-                    </button>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          </div>
+          <StudentList
+            students={students}
+            selectedStudentId={selectedStudentId}
+            newStudentName={newStudentName}
+            setNewStudentName={setNewStudentName}
+            onAddStudent={handleAddStudent}
+            onSelectStudent={setSelectedStudentId}
+            onDeleteStudent={(id) => {
+              setStudents(students => students.filter(s => s.id !== id));
+              if (selectedStudentId === id) setSelectedStudentId(null);
+            }}
+            onUpdateStudentAttribute={(studentIdx, attrIdx, key, value) => {
+              setStudents(students => students.map((s, i) => {
+                if (i !== studentIdx) return s;
+                const entries = Object.entries(s.attributes);
+                entries[attrIdx][0] = key;
+                entries[attrIdx][1] = value;
+                const newAttrs: Record<string, string> = {};
+                entries.forEach(([k, v]) => { newAttrs[k] = v; });
+                return { ...s, attributes: newAttrs };
+              }));
+            }}
+            onRemoveStudentAttribute={(studentIdx, attrIdx) => {
+              setStudents(students => students.map((s, i) => {
+                if (i !== studentIdx) return s;
+                const newAttrs: Record<string, string> = {};
+                Object.entries(s.attributes).forEach(([k, v], idx) => {
+                  if (idx !== attrIdx) newAttrs[k] = v;
+                });
+                return { ...s, attributes: newAttrs };
+              }));
+            }}
+            onAddStudentAttribute={(studentIdx) => {
+              setStudents(students => students.map((s, i) => {
+                if (i !== studentIdx) return s;
+                return {
+                  ...s,
+                  attributes: { ...s.attributes, [""]: "" }
+                };
+              }));
+            }}
+          />
         </div>
         <div className="right-col">
           <h2>
