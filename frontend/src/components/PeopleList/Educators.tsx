@@ -36,7 +36,6 @@ export const Educators: React.FC<EducatorsProps> = ({
 }) => {
   return (
     <>
-      <h3>Educators</h3>
       <ul className={styles['list-ul']}>
         <li className={styles['add-list-item']}>
           <div className={styles['group-box'] + ' ' + styles['add-group-box']}>

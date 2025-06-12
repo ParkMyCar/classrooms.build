@@ -35,7 +35,6 @@ export const Students: React.FC<StudentsProps> = ({
 }) => {
   return (
     <>
-      <h3>Students</h3>
       <ul className={styles['list-ul']}>
         <li className={styles['add-list-item']}>
           <div className={styles['group-box'] + ' ' + styles['add-group-box']}>
