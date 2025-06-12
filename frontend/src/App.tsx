@@ -1,8 +1,11 @@
-import { useState } from 'react'
-import { Calendar } from './components/Calendar/Calendar'
-import { SelectionMode, type SelectionMode as SelectionModeType } from './components/SelectionMode/SelectionMode'
-import { PeopleList } from './components/PeopleList/PeopleList'
-import './App.css'
+import { useState } from "react";
+import { Calendar } from "./components/Calendar/Calendar";
+import {
+  SelectionMode,
+  type SelectionMode as SelectionModeType,
+} from "./components/SelectionMode/SelectionMode";
+import { PeopleList } from "./components/PeopleList/PeopleList";
+import "./App.css";
 
 interface Student {
   id: string;
@@ -25,70 +28,101 @@ interface Educator {
 }
 
 function App() {
-  const [startTime, setStartTime] = useState('08:00');
-  const [endTime, setEndTime] = useState('16:00');
+  const [startTime, setStartTime] = useState("08:00");
+  const [endTime, setEndTime] = useState("16:00");
   const [blockSizeMinutes, setBlockSizeMinutes] = useState(15);
   const [showSaturday, setShowSaturday] = useState(false);
   const [showSunday, setShowSunday] = useState(false);
-  const [selectionMode, setSelectionMode] = useState<SelectionModeType>('available');
+  const [selectionMode, setSelectionMode] =
+    useState<SelectionModeType>("available");
 
   // Student state
   const [students, setStudents] = useState<Student[]>([]);
-  const [selectedStudentId, setSelectedStudentId] = useState<string | null>(null);
-  const [newStudentName, setNewStudentName] = useState('');
-  
+  const [selectedStudentId, setSelectedStudentId] = useState<string | null>(
+    null
+  );
+  const [newStudentName, setNewStudentName] = useState("");
+
   interface RequiredAttribute {
     name: string;
     values: string[] | null; // null means free-form text
   }
-  const [requiredStudentAttributes, setRequiredStudentAttributes] = useState<RequiredAttribute[]>([]);
+  const [requiredStudentAttributes, setRequiredStudentAttributes] = useState<
+    RequiredAttribute[]
+  >([]);
 
   // Educator state
   const [educators, setEducators] = useState<Educator[]>([]);
-  const [selectedEducatorId, setSelectedEducatorId] = useState<string | null>(null);
-  const [newEducatorName, setNewEducatorName] = useState('');
-  const [newEducatorAttributes, setNewEducatorAttributes] = useState<{ key: string; value: string }[]>([]);
+  const [selectedEducatorId, setSelectedEducatorId] = useState<string | null>(
+    null
+  );
+  const [newEducatorName, setNewEducatorName] = useState("");
+  const [newEducatorAttributes, setNewEducatorAttributes] = useState<
+    { key: string; value: string }[]
+  >([]);
 
   // Calendar state for selected student/educator
-  const selectedStudent = students.find(s => s.id === selectedStudentId) || null;
-  const selectedEducator = educators.find(e => e.id === selectedEducatorId) || null;
+  const selectedStudent =
+    students.find((s) => s.id === selectedStudentId) || null;
+  const selectedEducator =
+    educators.find((e) => e.id === selectedEducatorId) || null;
   const selectedEntity = selectedStudent || selectedEducator;
 
-  const handleAddRequiredAttribute = (name: string, values: string[] | null) => {
-    if (!requiredStudentAttributes.some(attr => attr.name === name)) {
-      setRequiredStudentAttributes(prev => [...prev, { name, values }]);
+  const handleAddRequiredAttribute = (
+    name: string,
+    values: string[] | null
+  ) => {
+    if (!requiredStudentAttributes.some((attr) => attr.name === name)) {
+      setRequiredStudentAttributes((prev) => [...prev, { name, values }]);
     }
   };
 
   const handleRemoveRequiredAttribute = (name: string) => {
-    setRequiredStudentAttributes(prev => prev.filter(attr => attr.name !== name));
+    setRequiredStudentAttributes((prev) =>
+      prev.filter((attr) => attr.name !== name)
+    );
   };
 
-  const handleUpdateRequiredAttributeValues = (name: string, values: string[] | null) => {
-    setRequiredStudentAttributes(prev => 
-      prev.map(attr => attr.name === name ? { ...attr, values } : attr)
+  const handleUpdateRequiredAttributeValues = (
+    name: string,
+    values: string[] | null
+  ) => {
+    setRequiredStudentAttributes((prev) =>
+      prev.map((attr) => (attr.name === name ? { ...attr, values } : attr))
     );
   };
 
   // Add a new student
-  const handleAddStudent = (attributes: Record<string, string>, educatorRequirements: { educatorId: string; meetingsPerWeek: number; meetingDurationMinutes: number }[]) => {
+  const handleAddStudent = (
+    attributes: Record<string, string>,
+    educatorRequirements: {
+      educatorId: string;
+      meetingsPerWeek: number;
+      meetingDurationMinutes: number;
+    }[]
+  ) => {
     if (!newStudentName.trim()) return;
-    
+
     // Check if all required attributes are present and valid
-    const missingRequired = requiredStudentAttributes.filter(required => {
+    const missingRequired = requiredStudentAttributes.filter((required) => {
       const value = attributes[required.name];
       if (!value) return true;
       if (required.values && !required.values.includes(value)) return true;
       return false;
     });
-    
+
     if (missingRequired.length > 0) {
-      const missingNames = missingRequired.map(r => r.name).join(', ');
+      const missingNames = missingRequired.map((r) => r.name).join(", ");
       const invalidValues = missingRequired
-        .filter(r => r.values && attributes[r.name] && !r.values.includes(attributes[r.name]))
-        .map(r => `${r.name} (must be one of: ${r.values?.join(', ')})`)
-        .join(', ');
-      
+        .filter(
+          (r) =>
+            r.values &&
+            attributes[r.name] &&
+            !r.values.includes(attributes[r.name])
+        )
+        .map((r) => `${r.name} (must be one of: ${r.values?.join(", ")})`)
+        .join(", ");
+
       let message = `Please fill in all required attributes: ${missingNames}`;
       if (invalidValues) {
         message += `\nInvalid values for: ${invalidValues}`;
@@ -99,16 +133,19 @@ function App() {
 
     // Check if at least one educator requirement is specified
     if (educatorRequirements.length === 0) {
-      alert('Please specify at least one educator meeting requirement.');
+      alert("Please specify at least one educator meeting requirement.");
       return;
     }
 
     // Check if all educator requirements are valid
-    const invalidEducatorReqs = educatorRequirements.filter(req => 
-      !req.educatorId || req.meetingsPerWeek < 1 || req.meetingDurationMinutes < 5
+    const invalidEducatorReqs = educatorRequirements.filter(
+      (req) =>
+        !req.educatorId ||
+        req.meetingsPerWeek < 1 ||
+        req.meetingDurationMinutes < 5
     );
     if (invalidEducatorReqs.length > 0) {
-      alert('Please fill in all educator requirement fields correctly.');
+      alert("Please fill in all educator requirement fields correctly.");
       return;
     }
 
@@ -119,14 +156,21 @@ function App() {
       schedule: [],
       educatorMeetingRequirements: educatorRequirements,
     };
-    setStudents(prev => [...prev, newStudent]);
+    setStudents((prev) => [...prev, newStudent]);
     setSelectedStudentId(newStudent.id);
-    setNewStudentName('');
+    setNewStudentName("");
   };
 
-  const handleAddEducatorRequirement = (studentId: string, requirement: { educatorId: string; meetingsPerWeek: number; meetingDurationMinutes: number }) => {
-    setStudents(students =>
-      students.map(student =>
+  const handleAddEducatorRequirement = (
+    studentId: string,
+    requirement: {
+      educatorId: string;
+      meetingsPerWeek: number;
+      meetingDurationMinutes: number;
+    }
+  ) => {
+    setStudents((students) =>
+      students.map((student) =>
         student.id === studentId
           ? {
               ...student,
@@ -140,15 +184,19 @@ function App() {
     );
   };
 
-  const handleRemoveEducatorRequirement = (studentId: string, educatorId: string) => {
-    setStudents(students =>
-      students.map(student =>
+  const handleRemoveEducatorRequirement = (
+    studentId: string,
+    educatorId: string
+  ) => {
+    setStudents((students) =>
+      students.map((student) =>
         student.id === studentId
           ? {
               ...student,
-              educatorMeetingRequirements: student.educatorMeetingRequirements.filter(
-                req => req.educatorId !== educatorId
-              ),
+              educatorMeetingRequirements:
+                student.educatorMeetingRequirements.filter(
+                  (req) => req.educatorId !== educatorId
+                ),
             }
           : student
       )
@@ -159,7 +207,7 @@ function App() {
   const handleAddEducator = () => {
     if (!newEducatorName.trim()) return;
     const attributes: Record<string, string> = {};
-    newEducatorAttributes.forEach(attr => {
+    newEducatorAttributes.forEach((attr) => {
       if (attr.key.trim()) attributes[attr.key] = attr.value;
     });
     const newEducator: Educator = {
@@ -169,24 +217,26 @@ function App() {
       schedule: [],
       subjects: [],
     };
-    setEducators(prev => [...prev, newEducator]);
+    setEducators((prev) => [...prev, newEducator]);
     setSelectedEducatorId(newEducator.id);
-    setNewEducatorName('');
+    setNewEducatorName("");
     setNewEducatorAttributes([]);
   };
 
   // Update schedule
-  const handleAvailabilityChange = (slots: { day: number; time: number; mode: SelectionModeType }[]) => {
+  const handleAvailabilityChange = (
+    slots: { day: number; time: number; mode: SelectionModeType }[]
+  ) => {
     if (!selectedEntity) return;
     if (selectedStudent) {
-      setStudents(students =>
-        students.map(s =>
+      setStudents((students) =>
+        students.map((s) =>
           s.id === selectedStudent.id ? { ...s, schedule: slots } : s
         )
       );
     } else if (selectedEducator) {
-      setEducators(educators =>
-        educators.map(e =>
+      setEducators((educators) =>
+        educators.map((e) =>
           e.id === selectedEducator.id ? { ...e, schedule: slots } : e
         )
       );
@@ -200,7 +250,7 @@ function App() {
   return (
     <div className="app">
       <h1>classrooms.build</h1>
-      
+
       <div className="controls">
         <div className="time-input">
           <label htmlFor="startTime">Start Time:</label>
@@ -267,43 +317,52 @@ function App() {
               onAdd: handleAddStudent,
               onSelect: setSelectedStudentId,
               onDelete: (id) => {
-                setStudents(students => students.filter(s => s.id !== id));
+                setStudents((students) => students.filter((s) => s.id !== id));
                 if (selectedStudentId === id) setSelectedStudentId(null);
               },
               onUpdateAttribute: (studentIdx, attrIdx, key, value) => {
-                setStudents(students => students.map((s, i) => {
-                  if (i !== studentIdx) return s;
-                  const entries = Object.entries(s.attributes);
-                  entries[attrIdx][0] = key;
-                  entries[attrIdx][1] = value;
-                  const newAttrs: Record<string, string> = {};
-                  entries.forEach(([k, v]) => { newAttrs[k] = v; });
-                  return { ...s, attributes: newAttrs };
-                }));
+                setStudents((students) =>
+                  students.map((s, i) => {
+                    if (i !== studentIdx) return s;
+                    const entries = Object.entries(s.attributes);
+                    entries[attrIdx][0] = key;
+                    entries[attrIdx][1] = value;
+                    const newAttrs: Record<string, string> = {};
+                    entries.forEach(([k, v]) => {
+                      newAttrs[k] = v;
+                    });
+                    return { ...s, attributes: newAttrs };
+                  })
+                );
               },
               onRemoveAttribute: (studentIdx, attrIdx) => {
-                setStudents(students => students.map((s, i) => {
-                  if (i !== studentIdx) return s;
-                  const newAttrs: Record<string, string> = {};
-                  Object.entries(s.attributes).forEach(([k, v], idx) => {
-                    if (idx !== attrIdx) newAttrs[k] = v;
-                  });
-                  return { ...s, attributes: newAttrs };
-                }));
+                setStudents((students) =>
+                  students.map((s, i) => {
+                    if (i !== studentIdx) return s;
+                    const newAttrs: Record<string, string> = {};
+                    Object.entries(s.attributes).forEach(([k, v], idx) => {
+                      if (idx !== attrIdx) newAttrs[k] = v;
+                    });
+                    return { ...s, attributes: newAttrs };
+                  })
+                );
               },
               onAddAttribute: (studentIdx) => {
-                setStudents(students => students.map((s, i) => {
-                  if (i !== studentIdx) return s;
-                  return {
-                    ...s,
-                    attributes: { ...s.attributes, [""]: "" }
-                  };
-                }));
+                setStudents((students) =>
+                  students.map((s, i) => {
+                    if (i !== studentIdx) return s;
+                    return {
+                      ...s,
+                      attributes: { ...s.attributes, [""]: "" },
+                    };
+                  })
+                );
               },
               onAddRequiredAttribute: handleAddRequiredAttribute,
               onRemoveRequiredAttribute: handleRemoveRequiredAttribute,
-              onUpdateRequiredAttributeValues: handleUpdateRequiredAttributeValues,
-              educators: educators.map(e => ({ id: e.id, name: e.name })),
+              onUpdateRequiredAttributeValues:
+                handleUpdateRequiredAttributeValues,
+              educators: educators.map((e) => ({ id: e.id, name: e.name })),
               onAddEducatorRequirement: handleAddEducatorRequirement,
               onRemoveEducatorRequirement: handleRemoveEducatorRequirement,
             }}
@@ -315,7 +374,9 @@ function App() {
               onAdd: handleAddEducator,
               onSelect: setSelectedEducatorId,
               onDelete: (id) => {
-                setEducators(educators => educators.filter(e => e.id !== id));
+                setEducators((educators) =>
+                  educators.filter((e) => e.id !== id)
+                );
                 if (selectedEducatorId === id) setSelectedEducatorId(null);
               },
             }}
@@ -323,16 +384,24 @@ function App() {
         </div>
         <div className="right-col">
           <h2>
-            {selectedEntity ? `Schedule for ${selectedEntity.name}` : 'Schedule'}
+            {selectedEntity
+              ? `Schedule for ${selectedEntity.name}`
+              : "Schedule"}
           </h2>
           {selectedEntity && (
             <>
               <div className="student-attributes-view">
-                {Object.entries(selectedEntity.attributes).length === 0 && <div>No attributes.</div>}
+                {Object.entries(selectedEntity.attributes).length === 0 && (
+                  <div>No attributes.</div>
+                )}
                 <ul>
-                  {Object.entries(selectedEntity.attributes).map(([key, value]) => (
-                    <li key={key}><strong>{key}:</strong> {value}</li>
-                  ))}
+                  {Object.entries(selectedEntity.attributes).map(
+                    ([key, value]) => (
+                      <li key={key}>
+                        <strong>{key}:</strong> {value}
+                      </li>
+                    )
+                  )}
                 </ul>
               </div>
             </>
@@ -341,13 +410,21 @@ function App() {
             currentMode={selectionMode}
             onModeChange={setSelectionMode}
             onClearAll={handleClearAll}
-            clearDisabled={!selectedEntity || selectedEntity.schedule.length === 0}
+            clearDisabled={
+              !selectedEntity || selectedEntity.schedule.length === 0
+            }
           />
           <div className="calendar-container">
             <Calendar
               onAvailabilityChange={handleAvailabilityChange}
-              startHour={parseInt(startTime.split(':')[0], 10) + parseInt(startTime.split(':')[1], 10) / 60}
-              endHour={parseInt(endTime.split(':')[0], 10) + parseInt(endTime.split(':')[1], 10) / 60}
+              startHour={
+                parseInt(startTime.split(":")[0], 10) +
+                parseInt(startTime.split(":")[1], 10) / 60
+              }
+              endHour={
+                parseInt(endTime.split(":")[0], 10) +
+                parseInt(endTime.split(":")[1], 10) / 60
+              }
               blockSizeMinutes={blockSizeMinutes}
               showSaturday={showSaturday}
               showSunday={showSunday}
@@ -359,7 +436,7 @@ function App() {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
