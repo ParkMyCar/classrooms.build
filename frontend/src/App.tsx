@@ -260,14 +260,14 @@ function App() {
                   ))}
                 </ul>
               </div>
-              <SelectionMode
+            </>
+          )}
+          <SelectionMode
                 currentMode={selectionMode}
                 onModeChange={setSelectionMode}
                 onClearAll={handleClearAll}
-                clearDisabled={!selectedStudentId || (selectedStudent && selectedStudent.schedule.length === 0)}
+                clearDisabled={students.length === 0 || !selectedStudentId || (selectedStudent ? selectedStudent.schedule.length === 0 : false)}
               />
-            </>
-          )}
           <div className="calendar-container">
             <Calendar
               onAvailabilityChange={handleAvailabilityChange}

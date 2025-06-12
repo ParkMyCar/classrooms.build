@@ -278,8 +278,8 @@ h1 {
 
 .add-student-form input[type="text"] {
   height: 32px;
-  font-size: 1.08em;
-  font-weight: bold;
+  font-size: 1em;
+  font-weight: 500;
   color: #1e293b;
   padding: 0 10px;
   border: 1px solid #d1d5db;
@@ -338,12 +338,11 @@ h1 {
   border: 1px solid #e0e7ef;
   background: #f8fafc;
   border-radius: 8px;
-  padding: 14px 14px 10px 14px;
+  padding: 12px;
   margin-bottom: 12px;
   box-shadow: 0 1px 2px rgba(0,0,0,0.03);
   display: flex;
   flex-direction: column;
-  gap: 8px;
 }
 
 .student-group-box:hover {
