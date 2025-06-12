@@ -68,6 +68,16 @@ function App() {
     educators.find((e) => e.id === selectedEducatorId) || null;
   const selectedEntity = selectedStudent || selectedEducator;
 
+  const handleStudentSelect = (id: string | null) => {
+    setSelectedStudentId(id);
+    setSelectedEducatorId(null); // Deselect educator when selecting student
+  };
+
+  const handleEducatorSelect = (id: string | null) => {
+    setSelectedEducatorId(id);
+    setSelectedStudentId(null); // Deselect student when selecting educator
+  };
+
   const handleAddRequiredAttribute = (
     name: string,
     values: string[] | null
@@ -228,16 +238,17 @@ function App() {
     slots: { day: number; time: number; mode: SelectionModeType }[]
   ) => {
     if (!selectedEntity) return;
-    if (selectedStudent) {
+    
+    if (selectedStudentId) {
       setStudents((students) =>
         students.map((s) =>
-          s.id === selectedStudent.id ? { ...s, schedule: slots } : s
+          s.id === selectedStudentId ? { ...s, schedule: slots } : s
         )
       );
-    } else if (selectedEducator) {
+    } else if (selectedEducatorId) {
       setEducators((educators) =>
         educators.map((e) =>
-          e.id === selectedEducator.id ? { ...e, schedule: slots } : e
+          e.id === selectedEducatorId ? { ...e, schedule: slots } : e
         )
       );
     }
@@ -245,6 +256,26 @@ function App() {
 
   const handleClearAll = () => {
     handleAvailabilityChange([]);
+  };
+
+  const handleGenerateSchedule = () => {
+    console.log("Student Requirements and Availability:");
+    students.forEach(student => {
+      console.log(`Student: ${student.name}`);
+      console.log("Attributes:", student.attributes);
+      console.log("Educator Meeting Requirements:", student.educatorMeetingRequirements);
+      console.log("Availability:", student.schedule);
+      console.log("---");
+    });
+
+    console.log("\nEducator Availability:");
+    educators.forEach(educator => {
+      console.log(`Educator: ${educator.name}`);
+      console.log("Attributes:", educator.attributes);
+      console.log("Subjects:", educator.subjects);
+      console.log("Availability:", educator.schedule);
+      console.log("---");
+    });
   };
 
   return (
@@ -303,6 +334,13 @@ function App() {
             Saturday
           </label>
         </div>
+        <button 
+          className="generate-schedule-btn"
+          onClick={handleGenerateSchedule}
+          disabled={students.length === 0 || educators.length === 0}
+        >
+          Generate Schedule
+        </button>
       </div>
 
       <div className="two-col-layout">
@@ -315,7 +353,7 @@ function App() {
               newName: newStudentName,
               setNewName: setNewStudentName,
               onAdd: handleAddStudent,
-              onSelect: setSelectedStudentId,
+              onSelect: handleStudentSelect,
               onDelete: (id) => {
                 setStudents((students) => students.filter((s) => s.id !== id));
                 if (selectedStudentId === id) setSelectedStudentId(null);
@@ -372,7 +410,7 @@ function App() {
               newName: newEducatorName,
               setNewName: setNewEducatorName,
               onAdd: handleAddEducator,
-              onSelect: setSelectedEducatorId,
+              onSelect: handleEducatorSelect,
               onDelete: (id) => {
                 setEducators((educators) =>
                   educators.filter((e) => e.id !== id)
@@ -388,24 +426,6 @@ function App() {
               ? `Schedule for ${selectedEntity.name}`
               : "Schedule"}
           </h2>
-          {selectedEntity && (
-            <>
-              <div className="student-attributes-view">
-                {Object.entries(selectedEntity.attributes).length === 0 && (
-                  <div>No attributes.</div>
-                )}
-                <ul>
-                  {Object.entries(selectedEntity.attributes).map(
-                    ([key, value]) => (
-                      <li key={key}>
-                        <strong>{key}:</strong> {value}
-                      </li>
-                    )
-                  )}
-                </ul>
-              </div>
-            </>
-          )}
           <SelectionMode
             currentMode={selectionMode}
             onModeChange={setSelectionMode}

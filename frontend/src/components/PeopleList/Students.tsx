@@ -65,8 +65,6 @@ export const Students: React.FC<StudentsProps> = ({
   onRemoveRequiredAttribute,
   onUpdateRequiredAttributeValues,
   educators,
-  onAddEducatorRequirement,
-  onRemoveEducatorRequirement,
 }) => {
   const [newRequiredAttr, setNewRequiredAttr] = useState("");
   const [newRequiredValues, setNewRequiredValues] = useState("");

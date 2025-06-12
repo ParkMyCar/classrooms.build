@@ -197,3 +197,23 @@ h1 {
 .student-attributes-view {
   margin-bottom: 8px;
 }
+
+.generate-schedule-btn {
+  padding: 8px 16px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s;
+}
+
+.generate-schedule-btn:hover {
+  background-color: #45a049;
+}
+
+.generate-schedule-btn:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}

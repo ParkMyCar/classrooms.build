@@ -52,7 +52,7 @@ export const Educators: React.FC<EducatorsProps> = ({
                 placeholder="Educator Name"
                 value={newName}
                 onChange={(e) => setNewName(e.target.value)}
-                style={{ marginRight: 8 }}
+                style={{ marginRight: 16 }}
               />
               <button type="submit" className={styles["add-btn"]}>
                 +

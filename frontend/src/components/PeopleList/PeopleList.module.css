@@ -32,7 +32,7 @@
   flex-direction: column;
 }
 
-.add-form input[type="text"] {
+form.add-form input[type="text"] {
   height: 32px;
   font-size: 1em;
   font-weight: 500;
@@ -45,8 +45,6 @@
   margin-bottom: 0;
   display: block;
   width: 100%;
-  max-width: 100%;
-  min-width: 0;
 }
 
 .attr-list {
