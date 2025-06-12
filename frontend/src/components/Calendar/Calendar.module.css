@@ -67,6 +67,43 @@
   background-color: #f3f4f6;
 }
 
+/* Selection mode styles */
+.cannot {
+  background-color: #fee2e2;
+  cursor: pointer;
+}
+
+.cannot:hover {
+  background-color: #fecaca;
+}
+
+.preferNot {
+  background-color: #ffedd5;
+  cursor: pointer;
+}
+
+.preferNot:hover {
+  background-color: #fed7aa;
+}
+
+.available {
+  background-color: #dbeafe;
+  cursor: pointer;
+}
+
+.available:hover {
+  background-color: #bfdbfe;
+}
+
+.preferred {
+  background-color: #dcfce7;
+  cursor: pointer;
+}
+
+.preferred:hover {
+  background-color: #bbf7d0;
+}
+
 .selected {
   background-color: #93c5fd;
 } 

@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { Calendar } from './components/Calendar/Calendar'
 import { SelectionMode, type SelectionMode as SelectionModeType } from './components/SelectionMode/SelectionMode'
-import { format, parse } from 'date-fns'
 import './App.css'
 
 function App() {
@@ -10,7 +9,7 @@ function App() {
   const [blockSizeMinutes, setBlockSizeMinutes] = useState(15);
   const [showSaturday, setShowSaturday] = useState(false);
   const [showSunday, setShowSunday] = useState(false);
-  const [selectedSlots, setSelectedSlots] = useState<{ day: number; time: number }[]>([]);
+  const [selectedSlots, setSelectedSlots] = useState<{ day: number; time: number; mode: SelectionModeType }[]>([]);
   const [selectionMode, setSelectionMode] = useState<SelectionModeType>('available');
 
   // Convert time string (HH:mm) to hour number
@@ -19,7 +18,7 @@ function App() {
     return hours + (minutes / 60);
   };
 
-  const handleAvailabilityChange = (slots: { day: number; time: number }[]) => {
+  const handleAvailabilityChange = (slots: { day: number; time: number; mode: SelectionModeType }[]) => {
     setSelectedSlots(slots);
   };
 
@@ -106,6 +105,7 @@ function App() {
           showSaturday={showSaturday}
           showSunday={showSunday}
           selectedSlots={selectedSlots}
+          currentMode={selectionMode}
         />
       </div>
     </div>

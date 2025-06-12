@@ -1,10 +1,12 @@
 import { useState, useCallback } from 'react';
 import { format, addDays, startOfWeek, addMinutes } from 'date-fns';
 import styles from './Calendar.module.css';
+import { type SelectionMode } from '../SelectionMode/SelectionMode';
 
 interface TimeSlot {
   day: number;
   time: number;  // Now represents minutes since start of day
+  mode: SelectionMode;
 }
 
 interface CalendarProps {
@@ -15,6 +17,7 @@ interface CalendarProps {
   showSaturday?: boolean;
   showSunday?: boolean;
   selectedSlots?: TimeSlot[];
+  currentMode: SelectionMode;
 }
 
 export function Calendar({ 
@@ -24,7 +27,8 @@ export function Calendar({
   blockSizeMinutes = 15,  // Default to 15-minute blocks
   showSaturday = false,
   showSunday = false,
-  selectedSlots = []
+  selectedSlots = [],
+  currentMode
 }: CalendarProps) {
   const [isSelecting, setIsSelecting] = useState(false);
   const [isDeselecting, setIsDeselecting] = useState(false);
@@ -59,6 +63,11 @@ export function Calendar({
     return selectedSlots.some(slot => slot.day === day && slot.time === time);
   };
 
+  const getSlotMode = (day: number, time: number): SelectionMode | undefined => {
+    const slot = selectedSlots.find(slot => slot.day === day && slot.time === time);
+    return slot?.mode;
+  };
+
   const handleMouseDown = useCallback((day: number, time: number) => {
     const isSelected = isSlotSelected(day, time);
     setIsSelecting(!isSelected);
@@ -67,9 +76,9 @@ export function Calendar({
     if (isSelected) {
       onAvailabilityChange?.(selectedSlots.filter(slot => !(slot.day === day && slot.time === time)));
     } else {
-      onAvailabilityChange?.([...selectedSlots, { day, time }]);
+      onAvailabilityChange?.([...selectedSlots, { day, time, mode: currentMode }]);
     }
-  }, [selectedSlots, onAvailabilityChange]);
+  }, [selectedSlots, onAvailabilityChange, currentMode]);
 
   const handleMouseEnter = useCallback((day: number, time: number) => {
     if (isSelecting || isDeselecting) {
@@ -77,11 +86,11 @@ export function Calendar({
         onAvailabilityChange?.(selectedSlots.filter(slot => !(slot.day === day && slot.time === time)));
       } else {
         if (!isSlotSelected(day, time)) {
-          onAvailabilityChange?.([...selectedSlots, { day, time }]);
+          onAvailabilityChange?.([...selectedSlots, { day, time, mode: currentMode }]);
         }
       }
     }
-  }, [isSelecting, isDeselecting, selectedSlots, onAvailabilityChange]);
+  }, [isSelecting, isDeselecting, selectedSlots, onAvailabilityChange, currentMode]);
 
   const handleMouseUp = useCallback(() => {
     setIsSelecting(false);
@@ -124,17 +133,20 @@ export function Calendar({
           >
             {formatTime(time)}
           </div>
-          {days.map((_, dayIndex) => (
-            <div
-              key={`${dayIndex}-${time}`}
-              className={`${styles.timeSlot} ${
-                isSlotSelected(dayIndex, time) ? styles.selected : styles.available
-              }`}
-              data-block-size={blockSizeMinutes}
-              onMouseDown={() => handleMouseDown(dayIndex, time)}
-              onMouseEnter={() => handleMouseEnter(dayIndex, time)}
-            />
-          ))}
+          {days.map((_, dayIndex) => {
+            const slotMode = getSlotMode(dayIndex, time);
+            return (
+              <div
+                key={`${dayIndex}-${time}`}
+                className={`${styles.timeSlot} ${
+                  slotMode ? styles[slotMode] : styles.available
+                }`}
+                data-block-size={blockSizeMinutes}
+                onMouseDown={() => handleMouseDown(dayIndex, time)}
+                onMouseEnter={() => handleMouseEnter(dayIndex, time)}
+              />
+            );
+          })}
         </>
       ))}
     </div>
