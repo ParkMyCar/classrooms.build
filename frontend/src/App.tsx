@@ -31,7 +31,6 @@ function App() {
   const [students, setStudents] = useState<Student[]>([]);
   const [selectedStudentId, setSelectedStudentId] = useState<string | null>(null);
   const [newStudentName, setNewStudentName] = useState('');
-  const [newStudentAttributes, setNewStudentAttributes] = useState<{ key: string; value: string }[]>([]);
   
   interface RequiredAttribute {
     name: string;
@@ -67,12 +66,8 @@ function App() {
   };
 
   // Add a new student
-  const handleAddStudent = () => {
+  const handleAddStudent = (attributes: Record<string, string>) => {
     if (!newStudentName.trim()) return;
-    const attributes: Record<string, string> = {};
-    newStudentAttributes.forEach(attr => {
-      if (attr.key.trim()) attributes[attr.key] = attr.value;
-    });
     
     // Check if all required attributes are present and valid
     const missingRequired = requiredStudentAttributes.filter(required => {
@@ -106,7 +101,6 @@ function App() {
     setStudents(prev => [...prev, newStudent]);
     setSelectedStudentId(newStudent.id);
     setNewStudentName('');
-    setNewStudentAttributes([]);
   };
 
   // Add a new educator

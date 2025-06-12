@@ -19,7 +19,7 @@ interface StudentsProps {
   selectedId: string | null;
   newName: string;
   setNewName: (name: string) => void;
-  onAdd: () => void;
+  onAdd: (attributes: Record<string, string>) => void;
   onSelect: (id: string) => void;
   onDelete: (id: string) => void;
   onUpdateAttribute: (idx: number, attrIdx: number, key: string, value: string) => void;
@@ -49,6 +49,7 @@ export const Students: React.FC<StudentsProps> = ({
   const [newRequiredAttr, setNewRequiredAttr] = useState('');
   const [newRequiredValues, setNewRequiredValues] = useState('');
   const [editingValues, setEditingValues] = useState<string | null>(null);
+  const [newStudentAttributes, setNewStudentAttributes] = useState<{ key: string; value: string }[]>([]);
 
   const handleAddRequiredAttribute = (e: React.FormEvent) => {
     e.preventDefault();
@@ -107,7 +108,7 @@ export const Students: React.FC<StudentsProps> = ({
             placeholder="Values"
             value={newRequiredValues}
             onChange={e => setNewRequiredValues(e.target.value)}
-            style={{ marginRight: 8, flex: 1 }}
+            style={{ marginRight: 8 }}
             title="Enter a comma-separated list of values, or leave empty for free-form text."
           />
           <button type="submit" className={styles['add-btn']}>+</button>
@@ -175,20 +176,82 @@ export const Students: React.FC<StudentsProps> = ({
         <li className={styles['add-list-item']}>
           <div className={styles['group-box'] + ' ' + styles['add-group-box']}>
             <form
-              className={styles['add-form']}
+              className={styles['add-form'] + ' ' + styles['add-form-students']}
               onSubmit={e => {
                 e.preventDefault();
-                onAdd();
+                // Convert newStudentAttributes to the format expected by the parent
+                const attributes: Record<string, string> = {};
+                newStudentAttributes.forEach(attr => {
+                  if (attr.key.trim()) attributes[attr.key] = attr.value;
+                });
+                onAdd(attributes);
+                // Clear the attributes after submission
+                setNewStudentAttributes([]);
               }}
             >
-              <input
-                type="text"
-                placeholder="Student Name"
-                value={newName}
-                onChange={e => setNewName(e.target.value)}
-                style={{ marginRight: 8 }}
-              />
-              <button type="submit" className={styles['add-btn']}>+</button>
+              <div className={styles['add-form-name']}>
+                <input
+                  type="text"
+                  placeholder="Student Name"
+                  value={newName}
+                  onChange={e => setNewName(e.target.value)}
+                  style={{ marginRight: 8 }}
+                />
+                <button type="submit" className={styles['add-btn']}>+</button>
+              </div>
+              {requiredAttributes && requiredAttributes.length > 0 && (
+                <div className={styles['required-fields']}>
+                  {requiredAttributes.map(attr => (
+                    <div key={attr.name} className={styles['required-field']}>
+                      <label className={styles['required-field-label']}>
+                        {attr.name}:
+                      </label>
+                      {attr.values ? (
+                        <select
+                          className={styles['required-field-select']}
+                          value={newStudentAttributes.find(a => a.key === attr.name)?.value || ''}
+                          onChange={e => {
+                            const existingIdx = newStudentAttributes.findIndex(a => a.key === attr.name);
+                            if (existingIdx >= 0) {
+                              const newAttrs = [...newStudentAttributes];
+                              newAttrs[existingIdx] = { key: attr.name, value: e.target.value };
+                              setNewStudentAttributes(newAttrs);
+                            } else {
+                              setNewStudentAttributes([...newStudentAttributes, { key: attr.name, value: e.target.value }]);
+                            }
+                          }}
+                          required
+                        >
+                          <option value="">Select {attr.name}</option>
+                          {attr.values.map(value => (
+                            <option key={value} value={value}>
+                              {value}
+                            </option>
+                          ))}
+                        </select>
+                      ) : (
+                        <input
+                          type="text"
+                          className={styles['required-field-input']}
+                          placeholder={`Enter ${attr.name}`}
+                          value={newStudentAttributes.find(a => a.key === attr.name)?.value || ''}
+                          onChange={e => {
+                            const existingIdx = newStudentAttributes.findIndex(a => a.key === attr.name);
+                            if (existingIdx >= 0) {
+                              const newAttrs = [...newStudentAttributes];
+                              newAttrs[existingIdx] = { key: attr.name, value: e.target.value };
+                              setNewStudentAttributes(newAttrs);
+                            } else {
+                              setNewStudentAttributes([...newStudentAttributes, { key: attr.name, value: e.target.value }]);
+                            }
+                          }}
+                          required
+                        />
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
             </form>
           </div>
         </li>

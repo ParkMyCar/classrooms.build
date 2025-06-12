@@ -22,7 +22,7 @@ interface PeopleListProps {
     selectedId: string | null;
     newName: string;
     setNewName: (name: string) => void;
-    onAdd: () => void;
+    onAdd: (attributes: Record<string, string>) => void;
     onSelect: (id: string) => void;
     onDelete: (id: string) => void;
     onUpdateAttribute: (idx: number, attrIdx: number, key: string, value: string) => void;

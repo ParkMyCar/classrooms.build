@@ -28,6 +28,10 @@
   gap: 8px;
 }
 
+.add-form-students {
+  flex-direction: column;
+}
+
 .add-form input[type="text"] {
   height: 32px;
   font-size: 1em;
@@ -287,4 +291,55 @@
 
 .cancel-btn:hover {
   background: #f1f5f9;
+}
+
+.add-form-name {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.required-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-top: 12px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.required-field {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.required-field-label {
+  min-width: 120px;
+  font-size: 0.9rem;
+  color: #1e293b;
+  font-weight: 500;
+}
+
+.required-field-input,
+.required-field-select {
+  flex: 1;
+  height: 32px;
+  font-size: 0.95rem;
+  padding: 0 10px;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  background: #fff;
+  color: #1e293b;
+}
+
+.required-field-select {
+  cursor: pointer;
+}
+
+.required-field-input:focus,
+.required-field-select:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
 } 
