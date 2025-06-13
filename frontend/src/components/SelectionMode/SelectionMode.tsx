@@ -60,9 +60,9 @@ export function SelectionMode({
         className={styles.clearButton}
         onClick={onClearAll}
         disabled={clearDisabled}
-        title="Clear all selections"
+        title="Clear selections"
       >
-        Clear All
+        Clear
       </button>
     </div>
   );
