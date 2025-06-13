@@ -109,7 +109,8 @@ function App() {
       educatorId: string;
       meetingsPerWeek: number;
       meetingDurationMinutes: number;
-    }[]
+    }[],
+    schedule?: { day: number; time: number; mode: SelectionModeType }[]
   ) => {
     if (!newStudentName.trim()) return;
 
@@ -163,7 +164,7 @@ function App() {
       id: `${Date.now()}-${Math.random()}`,
       name: newStudentName,
       attributes,
-      schedule: [],
+      schedule: schedule || [],
       educatorMeetingRequirements: educatorRequirements,
     };
     setStudents((prev) => [...prev, newStudent]);

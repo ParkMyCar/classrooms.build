@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import styles from "./PeopleList.module.css";
+import { type SelectionMode as SelectionModeType } from "../SelectionMode/SelectionMode";
 
 interface Student {
   id: string;
   name: string;
   attributes: Record<string, string>;
-  schedule: { day: number; time: number; mode: string }[];
+  schedule: { day: number; time: number; mode: SelectionModeType }[];
   educatorMeetingRequirements: {
     educatorId: string;
     meetingsPerWeek: number;
@@ -30,7 +31,8 @@ interface StudentsProps {
       educatorId: string;
       meetingsPerWeek: number;
       meetingDurationMinutes: number;
-    }[]
+    }[],
+    schedule?: { day: number; time: number; mode: SelectionModeType }[]
   ) => void;
   onSelect: (id: string) => void;
   onDelete: (id: string) => void;
@@ -79,6 +81,7 @@ export const Students: React.FC<StudentsProps> = ({
       meetingDurationMinutes: number;
     }[]
   >([]);
+  const [cloneScheduleFrom, setCloneScheduleFrom] = useState<string>("");
 
   const handleAddRequiredAttribute = (e: React.FormEvent) => {
     e.preventDefault();
@@ -248,9 +251,11 @@ export const Students: React.FC<StudentsProps> = ({
                 newStudentAttributes.forEach((attr) => {
                   if (attr.key.trim()) attributes[attr.key] = attr.value;
                 });
-                onAdd(attributes, newEducatorRequirements);
+                const selectedStudent = list.find(s => s.id === cloneScheduleFrom);
+                onAdd(attributes, newEducatorRequirements, selectedStudent?.schedule);
                 setNewStudentAttributes([]);
                 setNewEducatorRequirements([]);
+                setCloneScheduleFrom("");
               }}
             >
               <div className={styles["add-form-name"]}>
@@ -264,6 +269,23 @@ export const Students: React.FC<StudentsProps> = ({
                 <button type="submit" className={styles["add-btn"]}>
                   +
                 </button>
+              </div>
+              <div className={styles["clone-schedule"]}>
+                <label className={styles["clone-schedule-label"]}>
+                  Copy schedule:
+                </label>
+                <select
+                  value={cloneScheduleFrom}
+                  onChange={(e) => setCloneScheduleFrom(e.target.value)}
+                  className={styles["clone-schedule-select"]}
+                >
+                  <option value="">No schedule</option>
+                  {list.map((student) => (
+                    <option key={student.id} value={student.id}>
+                      {student.name}
+                    </option>
+                  ))}
+                </select>
               </div>
               {requiredAttributes && requiredAttributes.length > 0 && (
                 <div className={styles["required-fields"]}>

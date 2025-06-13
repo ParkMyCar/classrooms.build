@@ -548,3 +548,28 @@ form.add-form input[type="text"] {
   font-size: 0.9rem;
   width: 100%;
 }
+
+.clone-schedule {
+  margin: 8px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.clone-schedule-label {
+  font-size: 14px;
+  color: #666;
+}
+
+.clone-schedule-select {
+  padding: 4px 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  min-width: 128px;
+}
+
+.clone-schedule-select:focus {
+  outline: none;
+  border-color: #007bff;
+}

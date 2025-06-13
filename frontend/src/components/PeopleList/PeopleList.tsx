@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Students } from "./Students";
 import { Educators } from "./Educators";
 import styles from "./PeopleList.module.css";
+import { type SelectionMode as SelectionModeType } from "../SelectionMode/SelectionMode";
 
 type Tab = "students" | "educators";
 
@@ -16,7 +17,7 @@ interface PeopleListProps {
       id: string;
       name: string;
       attributes: Record<string, string>;
-      schedule: { day: number; time: number; mode: string }[];
+      schedule: { day: number; time: number; mode: SelectionModeType }[];
       educatorMeetingRequirements: {
         educatorId: string;
         meetingsPerWeek: number;
@@ -33,7 +34,8 @@ interface PeopleListProps {
         educatorId: string;
         meetingsPerWeek: number;
         meetingDurationMinutes: number;
-      }[]
+      }[],
+      schedule?: { day: number; time: number; mode: SelectionModeType }[]
     ) => void;
     onSelect: (id: string) => void;
     onDelete: (id: string) => void;
